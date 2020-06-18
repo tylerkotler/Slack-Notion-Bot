@@ -22,9 +22,6 @@ def get_changes_data():
     addedStories = []
     allChanges = pd.DataFrame(columns=('ID', 'Story', 'Status', 'Change Date', 'Name', 'Title', 'Ship Date'))
 
-    # with open('changes_metrics_unsorted.csv', 'w', newline='') as file:
-    #     writer = csv.writer(file, delimiter='|')
-    #     writer.writerow(['ID', 'Story', 'Status', 'Change Date', 'Name', 'Title', 'Ship Date'])
     for row in cv.collection.get_rows():
         if row.status == '13. Complete! (On Live)':
             if row.story == 'Duplicate an Experience':
@@ -48,7 +45,6 @@ def get_changes_data():
                                 full_name = ""
                                 for creator in client.get_block(id).change_made_by:
                                     full_name = creator.full_name
-                                # writer.writerow([row.id, row.story, status, time, full_name, title, row.ship_date.start])
                                 addedStories.append(row.story)
                                 allChanges = allChanges.append({'ID': row.id, 'Story': row.story, 'Status': status, 
                                                                 'Change Date': time, 'Name': full_name, 'Title': title, 
@@ -56,13 +52,12 @@ def get_changes_data():
     
     return order_by_time(allChanges)
     
-
+#Runs through dataframe of all the changes, groups by story, and orders by time within each story
+#Converts the dataframe into changes_metrics.csv
 def order_by_time(allChanges):
     print()
     print("Ordering by time")
     print()
-    # all_changes = pd.read_csv("./changes_metrics_unsorted.csv", sep="|")
-    # df = pd.DataFrame(allChanges)
     
     new_df = pd.DataFrame()
     firstRow = True
@@ -210,11 +205,6 @@ def get_status_times_furthest(reverse_array):
         currentDate = datetime.datetime.strptime(str(row[3]), '%Y-%m-%d %H:%M:%S')
         currentStatusNum = int(row[2].split(".")[0])
         
-        #I want to run through the changes in a story and hold each change's current status number
-        #Then for each change I will check if the status number is lower or higher than the previous 
-        #If it's lower, add to the furthest (current) time slot in times[] and don't change the
-        #current status number
-        #If it's higher, add to the new time slot and change the current status number
         if rowNum!=0:
             timeElapsed = (currentDate - previousDate).total_seconds()/3600
             times[previousStatusNum]+=timeElapsed
