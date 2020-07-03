@@ -51,7 +51,6 @@ def move_handler():
                 break
         if validators.url(story):
             block = notion_client.get_block(story)
-            print(block.card_id)
             story = block.title
         user = request.form.get('user_id')
         #Use threading to allow move_story and all functions after to execute, but code can return
