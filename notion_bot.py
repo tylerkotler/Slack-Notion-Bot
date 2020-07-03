@@ -76,7 +76,7 @@ def move_story(story, status, user):
     #If the story is completed, trigger the notion_data script to calculate all the
     #status times and update the spreadsheet
     if status.startswith('13'):
-        # notion_data.main()
+        notion_data.main()
         print("Running notion data calculations")
         print()
 
