@@ -75,9 +75,9 @@ def move_story(story, status, user):
     #If the story is completed, trigger the notion_data script to calculate all the
     #status times and update the spreadsheet
     if status.startswith('13'):
-        notion_data.main()
         print("Running notion data calculations")
         print()
+        notion_data.main()
 
 #Searches through the Notion Product Lineup to find the story
 def find_story(story):
@@ -109,7 +109,10 @@ def add_changes_data(story, status, user, row):
     row.change_made_by = change_made_by
     story_block = notion_client.get_block(row.id)
     new_CR_block = CollectionRowBlock(notion_client, story_block.id)
+    print(new_CR_block)
     row.story = new_CR_block
+    print(row.story)
+    row.set_property('story', new_CR_block)
 
 
 def send_move_message(row, story, status, user, url, channel):
