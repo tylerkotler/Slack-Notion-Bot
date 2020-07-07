@@ -77,7 +77,7 @@ def move_story(story, status, user):
     if status.startswith('13'):
         print("Running notion data calculations")
         print()
-        notion_data.main()
+#         notion_data.main()
 
 #Searches through the Notion Product Lineup to find the story
 def find_story(story):
@@ -103,16 +103,13 @@ def remove_chars(story):
 def add_changes_data(story, status, user, row):
     change_made_by = slack_client.users_info(user=user)["user"]["real_name"]
     changeView = notion_client.get_collection_view("https://www.notion.so/humanagency/a11ad18166f445e694c64037fbfd7d5b?v=67d6efa07c224fdc89603e1d9eb6ad5d")
-    row = changeView.collection.add_row()
-    row.title = f"{story} to {status}"
-    row.status = status
-    row.change_made_by = change_made_by
+    change_row = changeView.collection.add_row()
+    change_row.title = f"{story} to {status}"
+    change_row.status = status
+    change_row.change_made_by = change_made_by
     story_block = notion_client.get_block(row.id)
     new_CR_block = CollectionRowBlock(notion_client, story_block.id)
-    print(new_CR_block)
-    row.story = new_CR_block
-    print(row.story)
-    row.set_property('story', new_CR_block)
+    change_row.story = new_CR_block
 
 
 def send_move_message(row, story, status, user, url, channel):
