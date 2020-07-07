@@ -77,7 +77,7 @@ def move_story(story, status, user):
     if status.startswith('13'):
         print("Running notion data calculations")
         print()
-#         notion_data.main()
+        notion_data.main()
 
 #Searches through the Notion Product Lineup to find the story
 def find_story(story):
