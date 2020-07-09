@@ -150,6 +150,10 @@ def add_to_message(row, story, status):
 def authenticate():
     return render_template("authorize.html")
 
+@app.route("/")
+def home():
+    return render_template("index.html")
+
 # Start the server on port 3000
 if __name__ == "__main__":
   app.run()
