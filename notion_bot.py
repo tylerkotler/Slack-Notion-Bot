@@ -70,7 +70,7 @@ def move_story(story, status, user):
     row = find_story(story)
     row.set_property('status', status)
     url = notion_client.get_block(row.id).get_browseable_url()
-    send_move_message(row, story, status, user, url, "notion_bot_test")
+    send_move_message(row, story, status, user, url, "dev-experience")
     add_changes_data(story, status, user, row)
     #If the story is completed, trigger the notion_data script to calculate all the
     #status times and update the spreadsheet
