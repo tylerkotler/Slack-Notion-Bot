@@ -3,18 +3,22 @@ import json
 import csv
 from config import *
 from flask import Flask, request, Response, make_response, render_template
+# from flask_bootstrap import Boostrap
 from slack import WebClient
 from slack.errors import SlackApiError
 from notion.client import NotionClient
 from notion.collection import CollectionRowBlock
+from notion.collection import NotionDate
 import threading
 import requests
 import notion_data
 import validators
 import re
-
+import datetime
+ 
 
 app = Flask(__name__)
+# Boostrap(app)
 
 slack_client = WebClient(slack_token)
 notion_client = NotionClient(token_v2=notion_token_v2)
@@ -75,7 +79,11 @@ def move_story(story, status, user):
     add_changes_data(story, status, user, row)
     #If the story is completed, trigger the notion_data script to calculate all the
     #status times and update the spreadsheet
+    #Also update the ship date to today
     if status.startswith('13'):
+        today = datetime.date.today()
+        date_obj = NotionDate(start=today)
+        row.set_property('ship_date', date_obj)
         print("Running notion data calculations")
         print()
         notion_data.main()
@@ -143,6 +151,8 @@ def add_to_message(row, story, status):
     if status.startswith("11"):
         review_app = row.get_property("review_app_link")
         additional_info = additional_info + review_app.split("]")[0][1:] + " "
+    if status.startswith("13"):
+        additional_info = additional_info + ":bangbang::smiley::robot_face::tada::rocket::fire::bangbang:"
     return additional_info
 
 

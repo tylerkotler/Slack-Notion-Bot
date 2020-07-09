@@ -4,3 +4,5 @@ venv/
 _pychache_/
 *.csv
 .vscode/
+test_send.py 
+test_date.py
