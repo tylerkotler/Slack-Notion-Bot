@@ -1,0 +1,6 @@
+node_modules/
+venv/
+.ipynb_checkpoints/
+_pychache_/
+*.csv
+.vscode/
