@@ -6,3 +6,4 @@ _pychache_/
 .vscode/
 test_send.py 
 test_date.py
+.env

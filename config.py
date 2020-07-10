@@ -1,4 +1,9 @@
-slack_token='xoxb-989838950995-1224857200897-2MrPVZYTRhRwHFlHVvrceQu6'
-slack_verification_token = 'VlJplMjUK5BY4xApFzs42uOw'
-# webhook='url'
-notion_token_v2 = "813d7a9e48442c014b623cb65c9302876f59668cb7b24f876f55bcb1df8a46a47543bbf218aa1291002179415cebc26077fc034fb693299eec94c68497dc56530595fb5fe7c3347dede6cf11fba7"
+from decouple import config
+
+slack_token = config('SLACK_TOKEN')
+slack_verification_token = config('SLACK_VERIFICATION_TOKEN')
+notion_token_v2 = config('NOTION_TOKEN_V2')
+s3_bucket = config('S3_BUCKET')
+s3_secret = config('S3_SECRET')
+s3_key = config('S3_KEY')
+# webhook='url' 

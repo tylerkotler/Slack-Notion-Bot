@@ -3,7 +3,7 @@ import json
 import csv
 from config import *
 from flask import Flask, request, Response, make_response, render_template
-# from flask_bootstrap import Boostrap
+from flask_bootstrap import Bootstrap
 from slack import WebClient
 from slack.errors import SlackApiError
 from notion.client import NotionClient
@@ -14,11 +14,12 @@ import requests
 import notion_data
 import validators
 import re
-import datetime
+import datetime  
+import boto3 
  
-
-app = Flask(__name__)
-# Boostrap(app)
+         
+app = Flask(__name__)  
+Bootstrap(app)
 
 slack_client = WebClient(slack_token)
 notion_client = NotionClient(token_v2=notion_token_v2)
