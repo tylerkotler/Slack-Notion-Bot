@@ -1,11 +1,32 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>All S3 Files</title>
-</head>
-<body>
-    <h1>Files</h1>
-</body>
-</html>
+{% extends "bootstrap/base.html" %}
+{% block title %}Files Page{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-fixed-top">
+  <!-- ... -->
+</div>
+{% endblock %}
+
+{% block content %}
+  <h1>Files</h1>
+  <div class="container">
+    <div class="row">
+        <div class="col-12-xs">
+            <h3>Bucket Files</h3>
+            <hr>
+            <table class="table table-striped">
+                <tr>
+                    <th>File Name</th>
+                    <th>Last Modified</th>
+                </tr>
+                {% for f in files %}
+                <tr>
+                    <td>{{ f['Key'] }}</td>
+                    <td>{{ f['LastModified'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

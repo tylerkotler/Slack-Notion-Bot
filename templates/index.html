@@ -1,12 +1,15 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Home page of Notion Bot</title>
-</head>
-<body>
-    <h1>Notion Slack Bot</h1>
-    <button action="/files">AWS S3 Files</button>
-</body>
-</html>
+{% extends "bootstrap/base.html" %}
+{% block title %}Index Page{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-fixed-top">
+  <!-- ... -->
+</div>
+{% endblock %}
+
+{% block content %}
+<h1>Notion Slack Bot Homepage</h1>
+<form method="post" action="/files">
+    <input type="submit" value="S3 Files" name="S3 Files"/>
+</form>
+{% endblock %}
