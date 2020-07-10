@@ -17,7 +17,12 @@ import re
 import datetime  
 import boto3 
  
-         
+s3 = boto3.client(
+    's3',
+    aws_access_key_id=s3_key,
+    aws_secret_access_key=s3_secret
+)
+
 app = Flask(__name__)  
 Bootstrap(app)
 
@@ -164,6 +169,14 @@ def authenticate():
 @app.route("/")
 def home():
     return render_template("index.html")
+
+@app.route("/files")
+def files():
+    s3_resource = boto3.resource('s3')
+    my_bucket = s3_resource.Bucket(s3_bucket)
+    summaries = my_bucket.objects.all()
+    return render_template("files.html")
+
 
 # Start the server on port 3000
 if __name__ == "__main__":
