@@ -2,7 +2,7 @@ from slackeventsapi import SlackEventAdapter
 import json
 import csv
 from config import *
-from flask import Flask, request, Response, make_response, render_template
+from flask import Flask, request, Response, make_response, render_template, url_for, redirect
 from flask_bootstrap import Bootstrap
 from slack import WebClient
 from slack.errors import SlackApiError
@@ -16,7 +16,9 @@ import validators
 import re
 import datetime  
 import boto3  
- 
+import mimetypes
+import urllib
+  
 s3 = boto3.client(
         's3',
         aws_access_key_id=s3_key,
@@ -174,7 +176,24 @@ def home():
 def files():
     files = s3.list_objects(Bucket=s3_bucket)['Contents']
     return render_template("files.html", files=files)
-    
+
+
+@app.route("/download", methods=['POST'])
+def download():
+    key = request.form['key']
+    file_obj = s3.get_object(Bucket=s3_bucket, Key=key)
+    if(key.split('.')[1]=="ipynb"):
+        mime_type = 'application/x-ipynb+json'
+    else:    
+        mime = mimetypes.MimeTypes()
+        url = urllib.request.pathname2url(key)
+        mime_type_tuple = mime.guess_type(url)
+        mime_type = mime_type_tuple[0]
+    return Response(
+        file_obj['Body'].read(),
+        mimetype=mime_type,
+        headers={"Content-Disposition": f"attachment;filename={key}"}
+    )
 
 
 # Start the server on port 3000

@@ -10,6 +10,7 @@ import gspread
 import pandas as pd
 from config import *
 from oauth2client.service_account import ServiceAccountCredentials
+import boto3
 
 
 #Reads through all cards in Notion in column 13, pulls data out of their Changes table
@@ -326,12 +327,34 @@ def update_spreadsheet_helper(sheet, csv_file):
     status_condensed.close()
 
 
+file_names = [
+    "changes_metrics.csv", 
+    "status_times_condensed.csv",
+    "status_times_furthest_condensed.csv",
+    "status_times_furthest.csv",
+    "status_times.csv",
+    "status_total_times.csv",
+]
+
+def upload_files_to_s3():
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=s3_key,
+        aws_secret_access_key=s3_secret
+    )
+    for file_name in file_names:
+        s3.delete_object(Bucket=s3_bucket, Key=file_name)
+        with open(file_name, "rb") as f:
+            s3.upload_fileobj(f, s3_bucket, file_name)
+    
+
 def main():
     new_df = get_changes_data()
     reverse_array = get_status_times(new_df)
     get_status_times_furthest(reverse_array)
     get_status_totals()
     update_spreadsheet()
+    upload_files_to_s3()
 
 
 if __name__ == "__main__":
