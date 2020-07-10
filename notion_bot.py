@@ -143,7 +143,7 @@ def send_move_message(row, story, status, user, url, channel):
         if real_name in status_names:
             slack_id = slack_user.get('id')
             tag_string = tag_string+f"<@{slack_id}>"+" "
-    message_back = f"<@{user_id}> moved {story} to {status} " + tag_string + "\n" + url
+    message_back = f"<@{user_id}> moved:\n*{story}*\nto _*{status}*_\n" + tag_string + "\n" + url
     if additional_string!="":
         message_back = message_back + "\n" + additional_string
     slack_client.chat_postMessage(
@@ -203,7 +203,7 @@ def download():
             data,
             mimetype='application/zip',
             as_attachment=True,
-            attachment_filename='all_files.zip'
+            attachment_filename='changes_data.zip'
         )
     else:
         file_obj = s3.get_object(Bucket=s3_bucket, Key=key)
