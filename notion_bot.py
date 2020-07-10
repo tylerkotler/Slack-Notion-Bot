@@ -2,7 +2,7 @@ from slackeventsapi import SlackEventAdapter
 import json
 import csv
 from config import *
-from flask import Flask, request, Response, make_response, render_template, url_for, redirect
+from flask import Flask, request, Response, make_response, render_template, url_for, redirect, send_file
 from flask_bootstrap import Bootstrap
 from slack import WebClient
 from slack.errors import SlackApiError
@@ -18,6 +18,9 @@ import datetime
 import boto3  
 import mimetypes
 import urllib 
+import os
+import io
+from zipfile import ZipFile
   
 s3 = boto3.client(
         's3',
@@ -181,19 +184,41 @@ def files():
 @app.route("/download", methods=['POST'])
 def download():
     key = request.form['key']
-    file_obj = s3.get_object(Bucket=s3_bucket, Key=key)
-    if(key.split('.')[1]=="ipynb"):
-        mime_type = 'application/x-ipynb+json'
-    else:    
-        mime = mimetypes.MimeTypes()
-        url = urllib.request.pathname2url(key)
-        mime_type_tuple = mime.guess_type(url)
-        mime_type = mime_type_tuple[0]
-    return Response(
-        file_obj['Body'].read(),
-        mimetype=mime_type,
-        headers={"Content-Disposition": f"attachment;filename={key}"}
-    )
+    if key=="all_keys":
+        s3_resource = boto3.resource(
+            's3',
+            aws_access_key_id=s3_key,
+            aws_secret_access_key=s3_secret
+        )
+        my_bucket = s3_resource.Bucket(s3_bucket)
+        data = io.BytesIO()
+        with ZipFile(data, mode='w') as zipObj:
+            for s3_object in my_bucket.objects.all():
+                path, filename = os.path.split(s3_object.key)
+                print(s3_object.key)
+                my_bucket.download_file(s3_object.key, filename)
+                zipObj.write(s3_object.key)
+        data.seek(0)
+        return send_file( 
+            data,
+            mimetype='application/zip',
+            as_attachment=True,
+            attachment_filename='all_files.zip'
+        )
+    else:
+        file_obj = s3.get_object(Bucket=s3_bucket, Key=key)
+        if(key.split('.')[1]=="ipynb"):
+            mime_type = 'application/x-ipynb+json'
+        else:    
+            mime = mimetypes.MimeTypes()
+            url = urllib.request.pathname2url(key)
+            mime_type_tuple = mime.guess_type(url)
+            mime_type = mime_type_tuple[0]
+        return Response(
+            file_obj['Body'].read(),
+            mimetype=mime_type,
+            headers={"Content-Disposition": f"attachment;filename={key}"}
+        )
 
 
 # Start the server on port 3000

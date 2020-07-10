@@ -17,6 +17,13 @@
     <h1>Files</h1>
     <div class="container">
         <div class="row">
+            <form action="{{ url_for('download') }}" method="post">
+                <input type="hidden" name="key" value="all_keys">
+                <label>Download All</label>
+                <button type="submit">
+                    <i class="fa fa-download"></i>
+                </button>
+            </form>
             <hr>
             <table>
                 <tr>
