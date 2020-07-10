@@ -1,0 +1,22 @@
+table{
+    border: 1px solid gray;
+    margin-left: auto;
+    margin-right: auto;
+    width: 98%;
+    background-color: #eed0c4;
+}
+td{
+    border: 1px solid gray;
+    width: 14%;
+    min-height: 50px;
+    height: 50px;
+    text-align: left;
+    vertical-align: top;
+}
+th{
+    border: 2px solid gray;
+    width: 14%;
+    height: 30px;
+    text-align: left;
+    font-size: 20px;
+}
