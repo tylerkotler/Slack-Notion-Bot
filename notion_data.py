@@ -2,6 +2,7 @@ from notion.client import NotionClient
 from notion.collection import NotionDate
 import csv 
 import os
+import json
 import datetime
 from datetime import timedelta
 import string
@@ -261,7 +262,19 @@ def update_spreadsheet():
     print("Adding all data to Google Sheets")
     
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('Notion Changes Data.json', scope)
+    sheets_auth_data = {
+        "type": "service_account",
+        "project_id": sheets_project_id,
+        "private_key_id": sheets_private_key_id,
+        "private_key": sheets_private_key.replace("\\n", "\n"),
+        "client_email": sheets_client_email,
+        "client_id": sheets_client_id,
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": sheets_client_x509_cert_url
+    }
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(sheets_auth_data, scope)
     client = gspread.authorize(creds)
     sheet = client.open('Human Agency Experience Dashboard').worksheet("Notion_Changes_Data")
     sheet_furthest = client.open('Human Agency Experience Dashboard').worksheet("Notion_Changes_Data_Furthest")
@@ -337,6 +350,8 @@ file_names = [
 ]
 
 def upload_files_to_s3():
+    print()
+    print("Uploading files to s3")
     s3 = boto3.client(
         's3',
         aws_access_key_id=s3_key,
@@ -349,12 +364,12 @@ def upload_files_to_s3():
     
 
 def main():
-    new_df = get_changes_data()
-    reverse_array = get_status_times(new_df)
-    get_status_times_furthest(reverse_array)
-    get_status_totals()
+    # new_df = get_changes_data()
+    # reverse_array = get_status_times(new_df)
+    # get_status_times_furthest(reverse_array)
+    # get_status_totals()
     update_spreadsheet()
-    upload_files_to_s3()
+    # upload_files_to_s3()
 
 
 if __name__ == "__main__":

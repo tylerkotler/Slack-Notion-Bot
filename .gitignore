@@ -7,3 +7,5 @@ _pychache_/
 test_send.py 
 test_date.py
 .env
+test_json.py
+Notion_Changes_Data_Full.json
