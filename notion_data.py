@@ -9,10 +9,10 @@ import string
 import time
 import gspread
 import pandas as pd
-from config import *
+from config import notion_token_v2, sheets_client_email, sheets_client_id, sheets_client_x509_cert_url, sheets_private_key, sheets_private_key_id, sheets_project_id, s3_bucket, s3_key, s3_secret
 from oauth2client.service_account import ServiceAccountCredentials
 import boto3
-
+ 
 
 #Reads through all cards in Notion in column 13, pulls data out of their Changes table
 #Adds to a dataframe called allChanges
@@ -66,11 +66,11 @@ def order_by_time(allChanges):
     firstRow = True
     newStory = True
     story = ''
-    for index, change in allChanges.iterrows():
-        if firstRow:
+    for _index, change in allChanges.iterrows():
+        if firstRow: 
             firstRow = False
             story = change['Story']
-        if change['Story']!=story:
+        if change['Story']!=story: 
             newStory = True
             story = change['Story']
         if newStory:
@@ -121,9 +121,9 @@ def get_status_times(new_df):
     currentDate = None
     currentStatusNum = 0
     rowNum = 0
-    firstRow = True
+    firstRow = True 
 
-    for index, change in new_df.iterrows():
+    for _index, change in new_df.iterrows():
         
         reverse_array.insert(0, change)
 
