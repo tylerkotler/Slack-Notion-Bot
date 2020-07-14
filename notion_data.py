@@ -364,12 +364,12 @@ def upload_files_to_s3():
     
 
 def main():
-    # new_df = get_changes_data()
-    # reverse_array = get_status_times(new_df)
-    # get_status_times_furthest(reverse_array)
-    # get_status_totals()
+    new_df = get_changes_data()
+    reverse_array = get_status_times(new_df)
+    get_status_times_furthest(reverse_array)
+    get_status_totals()
     update_spreadsheet()
-    # upload_files_to_s3()
+    upload_files_to_s3()
 
 
 if __name__ == "__main__":
