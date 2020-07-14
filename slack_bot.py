@@ -46,7 +46,9 @@ def home():
 
 @app.route("/run-data", methods=['POST'])
 def run_data():
-    notion_data.main()
+    t = threading.Thread(target=notion_data.main())
+    t.setDaemon(False)
+    t.start()
     return redirect('/')
 
 @app.route("/files", methods=['POST', 'GET'])
