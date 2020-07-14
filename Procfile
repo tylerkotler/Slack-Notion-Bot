@@ -1,1 +1,1 @@
-web: gunicorn notion_bot:app
+web: gunicorn slack_bot:app
