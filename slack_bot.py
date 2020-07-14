@@ -49,7 +49,6 @@ def run_data():
     t = threading.Thread(target=notion_data.main())
     t.setDaemon(False)
     t.start()
-    return redirect('/')
 
 @app.route("/files", methods=['POST', 'GET'])
 def files():
