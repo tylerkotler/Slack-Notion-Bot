@@ -1,8 +1,10 @@
-# notion-analytics
-## 2 scripts:
-**1. notion_bot** -> it is a Flask app that takes in slash commands on Slack and makes changes on Notion, including moving stories and adding Changes data. It also runs the notion_data script when a card is moved to 13
+# notion-analytics/bot
+## Structure:
+**1. slack_bot** -> it is a Flask app that takes in slash commands on Slack and handles reqests through the front end webpage of the bot, which can be found at https://notion-slackbot.herokuapp.com/ . Here, the s3 files are listed and can be downloaded (instead of having to go through the aws website).
 
-**2. notion_data** -> it runs through all the changes in the Changes table, calculates status times, adds the data to csvs, and writes it to the HA Google Sheets. The csv files are stored in Amazon AWS S3 human-agency-slackbot bucket, along with the 2 jupyter notebook (ipynb) files that contain visualizations of the data.
+**2. move_story** -> its move_story method is called by the move_handler method in slack_bot, which moves a story to a new column on Notion, adds changes data on Notion, and sends back a response. If the story moves to column 13, it triggers the notion_data script.
+
+**3. notion_data** -> it runs through all the changes in the Changes table, calculates status times, adds the data to csvs, and writes it to the HA Google Sheets. The csv files are stored in Amazon AWS S3 human-agency-slackbot bucket, along with the 2 jupyter notebook (ipynb) files that contain visualizations of the data.
 
 ## Documentation:
 All documentation for the bot is on Notion in Tech -> Documentation -> Slack Bot
