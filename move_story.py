@@ -8,6 +8,7 @@ from slack import WebClient
 from slack.errors import SlackApiError
 import datetime
 import re
+import csv
 
 slack_client = WebClient(slack_token)
 notion_client = NotionClient(token_v2=notion_token_v2)
@@ -26,6 +27,11 @@ def move_story(story, status, user):
         today = datetime.date.today()
         date_obj = NotionDate(start=today)
         row.set_property('ship_date', date_obj)
+        currentDate = datetime.datetime.now().strftime("%m/%d/%Y %H:%M")
+        with open('last_status_calc.csv', 'w') as f:
+            f.truncate(0)
+            file_writer = csv.writer(f)
+            file_writer.writerow([currentDate])
         print("Running notion data calculations")
         print()
         notion_data.main()

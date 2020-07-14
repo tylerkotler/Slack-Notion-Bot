@@ -35,7 +35,16 @@ notion_client = NotionClient(token_v2=notion_token_v2)
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    with open('last_status_calc.csv', 'r') as f:
+        csv_reader = csv.reader(f)
+        for row in csv_reader:
+            currentDate = row[0]
+    return render_template("index.html", today=currentDate)
+
+@app.route("/run-data", methods=['POST'])
+def run_data():
+    notion_data.main()
+    return redirect('/')
 
 @app.route("/files", methods=['POST', 'GET'])
 def files():

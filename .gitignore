@@ -4,8 +4,6 @@ venv/
 _pychache_/
 *.csv
 .vscode/
-test_send.py 
-test_date.py
 .env
-test_json.py
+test*
 Notion_Changes_Data_Full.json

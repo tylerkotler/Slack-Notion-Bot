@@ -347,6 +347,7 @@ file_names = [
     "status_times_furthest.csv",
     "status_times.csv",
     "status_total_times.csv",
+    "last_status_calc.csv"
 ]
 
 def upload_files_to_s3():
@@ -361,7 +362,7 @@ def upload_files_to_s3():
         s3.delete_object(Bucket=s3_bucket, Key=file_name)
         with open(file_name, "rb") as f:
             s3.upload_fileobj(f, s3_bucket, file_name)
-    
+
 
 def main():
     new_df = get_changes_data()
