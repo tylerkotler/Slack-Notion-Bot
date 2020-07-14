@@ -1,4 +1,4 @@
-# notion-analytics
+# notion-analytics/bot
 ## Structure:
 **1. slack_bot** -> it is a Flask app that takes in slash commands on Slack and handles reqests through the front end webpage of the bot, which can be found at https://notion-slackbot.herokuapp.com/ . Here, the s3 files are listed and can be downloaded (instead of having to go through the aws website).
 
