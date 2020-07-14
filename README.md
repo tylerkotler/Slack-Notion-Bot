@@ -4,6 +4,9 @@
 
 **2. notion_data** -> it runs through all the changes in the Changes table, calculates status times, adds the data to csvs, and writes it to the HA Google Sheets. The csv files are stored in Amazon AWS S3 human-agency-slackbot bucket, along with the 2 jupyter notebook (ipynb) files that contain visualizations of the data.
 
+## Documentation:
+All documentation for the bot is on Notion in Tech -> Documentation -> Slack Bot
+
 ## Credentials:
 All credentials are stored as config variables in the notion-slackbot app on Heroku, where the app is deployed. They are all obtained in the config file.
 
