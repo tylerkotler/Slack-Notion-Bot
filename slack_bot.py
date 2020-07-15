@@ -40,7 +40,7 @@ def home():
             csv_reader = csv.reader(f)
             for row in csv_reader:
                 currentDate = row[0]
-    else:
+    else: 
         currentDate = "Hasn't been run since last Heroku build"
     return render_template("index.html", today=currentDate)
 
