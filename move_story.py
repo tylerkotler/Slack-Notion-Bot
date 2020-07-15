@@ -101,7 +101,7 @@ def add_to_message(row, story, status):
         if pr != "":
             additional_info = additional_info + pr.split("]")[0][1:] + " "
         else:
-            additional_info = additional_info + "Github PR is missing :warning:"
+            additional_info = additional_info + ":warning: Github PR is missing :warning:"
     #11 -> Gets review app link
     if status.startswith("11"):
         review_app = row.get_property("review_app_link")
