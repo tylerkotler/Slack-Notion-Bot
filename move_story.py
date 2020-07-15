@@ -76,14 +76,22 @@ def send_move_message(row, story, status, user, url, channel):
     slack_users = slack_client.users_list()
     tag_string = ''
     firstTag = True
-    for slack_user in slack_users["members"]:
-        real_name = slack_user.get('real_name')
-        if real_name in status_names:
-            if firstTag:
-                tag_string = tag_string + "\n"
-                firstTag = False
-            slack_id = slack_user.get('id')
-            tag_string = tag_string+f"<@{slack_id}>"+" "
+    if status.startswith("9"):
+        assigned = row.get_property("assign")
+        users_cv = notion_client.get_collection_view("https://www.notion.so/humanagency/8daf88aa8e384105b1a8cab2c100b731?v=97fca2b55bea4173a8ec8bbba8c8ba49")
+        for user in assigned:
+            for row in users_cv.collection.get_rows():
+                if row.title == user.full_name:
+                    status_names.append(row.slack_name)
+    if status_names:
+        for slack_user in slack_users["members"]:
+            real_name = slack_user.get('real_name')
+            if real_name in status_names:
+                if firstTag:
+                    tag_string = tag_string + "\n"
+                    firstTag = False
+                slack_id = slack_user.get('id')
+                tag_string = tag_string+f"<@{slack_id}>"+" "
     message_back = f"<@{user_id}> moved:\n*{story}*\nto _*{status}*_" + tag_string + "\n" + url
     if additional_string!="":
         message_back = message_back + "\n" + additional_string
