@@ -75,12 +75,16 @@ def send_move_message(row, story, status, user, url, channel):
     status_names = slack_bot.statuses.get(status)
     slack_users = slack_client.users_list()
     tag_string = ''
+    firstTag = True
     for slack_user in slack_users["members"]:
         real_name = slack_user.get('real_name')
         if real_name in status_names:
+            if firstTag:
+                tag_string = tag_string + "\n"
+                firstTag = False
             slack_id = slack_user.get('id')
             tag_string = tag_string+f"<@{slack_id}>"+" "
-    message_back = f"<@{user_id}> moved:\n*{story}*\nto _*{status}*_\n" + tag_string + "\n" + url
+    message_back = f"<@{user_id}> moved:\n*{story}*\nto _*{status}*_" + tag_string + "\n" + url
     if additional_string!="":
         message_back = message_back + "\n" + additional_string
     slack_client.chat_postMessage(
@@ -94,7 +98,10 @@ def add_to_message(row, story, status):
     additional_info = ""
     if status.startswith("10") or status.startswith("12"):
         pr = row.get_property("github_pull_requests_2")
-        additional_info = additional_info + pr.split("]")[0][1:] + " "
+        if pr != "":
+            additional_info = additional_info + pr.split("]")[0][1:] + " "
+        else:
+            additional_info = additional_info + "Github PR is missing :warning:"
     #11 -> Gets review app link
     if status.startswith("11"):
         review_app = row.get_property("review_app_link")
