@@ -70,13 +70,10 @@ def add_changes_data(story, status, user, row):
 
 
 def send_move_message(row, story, status, user, url, channel):
-    additional_string = add_to_message(row, story, status)
     user_id = slack_client.users_info(user=user)["user"]["id"]
     status_names = slack_bot.statuses.get(status)
-    slack_users = slack_client.users_list()
     tag_string = ''
-    firstTag = True
-    if status.startswith("9"):
+    if status.startswith("9"): #get assigned developers if story moves to 9
         assigned = row.get_property("assign")
         users_cv = notion_client.get_collection_view("https://www.notion.so/humanagency/8daf88aa8e384105b1a8cab2c100b731?v=97fca2b55bea4173a8ec8bbba8c8ba49")
         for user in assigned:
@@ -84,21 +81,28 @@ def send_move_message(row, story, status, user, url, channel):
                 if row.title == user.full_name:
                     status_names.append(row.slack_name)
     if status_names:
-        for slack_user in slack_users["members"]:
-            real_name = slack_user.get('real_name')
-            if real_name in status_names:
-                if firstTag:
-                    tag_string = tag_string + "\n"
-                    firstTag = False
-                slack_id = slack_user.get('id')
-                tag_string = tag_string+f"<@{slack_id}>"+" "
+        tag_string = get_tag_string(status_names)
     message_back = f"<@{user_id}> moved:\n*{story}*\nto _*{status}*_" + tag_string + "\n" + url
+    additional_string = add_to_message(row, story, status)
     if additional_string!="":
         message_back = message_back + "\n" + additional_string
     slack_client.chat_postMessage(
-          channel=channel,
+          channel=channel, #Only posts in dev-experience (statuses 6-13)
           text=message_back
     )
+
+def get_tag_string(status_names):
+    firstTag = True
+    slack_users = slack_client.users_list()
+    for slack_user in slack_users["members"]:
+        real_name = slack_user.get('real_name')
+        if real_name in status_names:
+            if firstTag:
+                tag_string = tag_string + "\n"
+                firstTag = False
+            slack_id = slack_user.get('id')
+            tag_string = tag_string+f"<@{slack_id}>"+" "
+    return tag_string
 
 #Customizeable additions to the message sent in slack based on the column its moving to
 def add_to_message(row, story, status):
