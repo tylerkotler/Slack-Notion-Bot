@@ -11,7 +11,7 @@ def assign_people(story, slack_names, user):
     assigned_users = []
     for row in users_cv.collection.get_rows():
         for slack_name in slack_names:
-            if row.slack_name == slack_name:
+            if row.slack_real_name == slack_name:
                 assigned_users.extend(row.notion_user)
     story_row = move_story.find_story(story)
     story_row.set_property("assign", assigned_users)

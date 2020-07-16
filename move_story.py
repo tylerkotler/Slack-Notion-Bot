@@ -81,7 +81,7 @@ def send_move_message(row, story, status, user, url, channel):
         for user in assigned:
             for row in users_cv.collection.get_rows():
                 if row.title == user.full_name:
-                    status_names.append(row.slack_name)
+                    status_names.append(row.slack_real_name)
     if status_names:
         tag_string = get_tag_string(status_names)
     message_back = f"<@{user_id}> moved:\n*{story}*\nto _*{status}*_" + tag_string + "\n" + url
