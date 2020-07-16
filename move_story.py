@@ -94,6 +94,7 @@ def send_move_message(row, story, status, user, url, channel):
 def get_tag_string(status_names):
     firstTag = True
     slack_users = slack_client.users_list()
+    tag_string = ''
     for slack_user in slack_users["members"]:
         real_name = slack_user.get('real_name')
         if real_name in status_names:
