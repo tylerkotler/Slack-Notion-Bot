@@ -19,6 +19,8 @@ def move_story(story, status, user):
     url = notion_client.get_block(row.id).get_browseable_url()
     if int(status.split(".")[0])>=6:
         send_move_message(row, story, status, user, url, "dev-experience")
+    elif int(status.split(".")[0])>=4:
+        send_move_message(row, story, status, user, url, "design-review-ha")
     add_changes_data(story, status, user, row)
     #If the story is completed, trigger the notion_data script to calculate all the
     #status times and update the spreadsheet

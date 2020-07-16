@@ -1,9 +1,11 @@
 node_modules/
 venv/
 .ipynb_checkpoints/
-_pychache_/
+__pychache__/ 
 *.csv
 .vscode/
 .env
 test*
 Notion_Changes_Data_Full.json
+__pycache__
+*.pyc 

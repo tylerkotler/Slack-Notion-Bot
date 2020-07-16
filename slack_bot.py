@@ -1,8 +1,10 @@
 import move_story
-from config import s3_key, s3_secret, s3_bucket, notion_token_v2, slack_verification_token
+import assign
+from config import s3_key, s3_secret, s3_bucket, notion_token_v2, slack_verification_token, slack_token
 from flask import Flask, request, Response, make_response, render_template, url_for, redirect, send_file
 from flask_bootstrap import Bootstrap
 from notion.client import NotionClient
+from slack import WebClient
 import json
 import csv
 import threading
@@ -18,6 +20,7 @@ import os
 import io
 from zipfile import ZipFile
 
+
 #This is the home base of the flask app. It handles the different routes and 
 #POST/GET requests
 
@@ -31,6 +34,7 @@ s3 = boto3.client(
         aws_secret_access_key=s3_secret
 )
 notion_client = NotionClient(token_v2=notion_token_v2)
+slack_client = WebClient(slack_token)
 
 
 @app.route("/")
@@ -119,6 +123,9 @@ def move_handler():
     token = request.form.get('token')
     if token == slack_verification_token:
         text = request.form.get('text')
+        arr = text.split("\xa0")
+        if len(arr) > 1:
+            text = " ".join(arr)
         res = [i for i in range(len(text)) if text.startswith("to ", i)] 
         last_to = res[-1]
         story = str(text[0:(last_to-1)])
@@ -144,6 +151,42 @@ def move_handler():
         return Response(response=json.dumps(data), status=200, mimetype="application/json")
 
 
+@app.route("/slack/assign", methods=['POST'])
+def assign_handler():
+    token = request.form.get('token')
+    if token == slack_verification_token:
+        user = request.form.get('user_id')
+        text = str(request.form.get('text'))
+        arr = text.split("\xa0")
+        if len(arr) > 1:
+            text = " ".join(arr)
+        res = [i for i in range(len(text)) if text.startswith("to ", i)] 
+        first_to = res[0]
+        story = str(text[(first_to+3):])
+        if validators.url(story):
+            block = notion_client.get_block(story)
+            story = block.title
+        users = text[text.index("@"):(first_to-1)].split(" ")
+        users = [s.strip("@") for s in users]
+        slack_users = slack_client.users_list()
+        slack_names = []
+        for slack_user in slack_users["members"]:
+            name = slack_user.get('name')
+            if name in users:
+                slack_names.append(slack_user.get('real_name'))
+
+        t = threading.Thread(target=assign.assign_people, args=[story, slack_names, user])
+        t.setDaemon(False)
+        t.start()
+        
+        slack_names_string = ", ".join(slack_names)
+        data = {
+                "text": f"Assigning {slack_names_string} to {story}",
+                "response_type": 'in_channel'
+        }
+        return Response(response=json.dumps(data), status=200, mimetype="application/json")
+
+
 @app.route("/slack/authorize", methods=['GET'])
 def authenticate():
     return render_template("authorize.html")
@@ -151,4 +194,4 @@ def authenticate():
 
 # Start the server on port 3000
 if __name__ == "__main__":
-  app.run()
+  app.run(port=3000)
