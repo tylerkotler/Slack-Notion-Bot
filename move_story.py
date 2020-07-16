@@ -89,7 +89,7 @@ def send_move_message(row, story, status, user, url, channel):
     if additional_string!="":
         message_back = message_back + "\n" + additional_string
     slack_client.chat_postMessage(
-          channel=channel, #Only posts in dev-experience (statuses 6-13)
+          channel=channel,
           text=message_back
     )
 
