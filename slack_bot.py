@@ -161,12 +161,12 @@ def assign_handler():
         if len(arr) > 1:
             text = " ".join(arr)
         res = [i for i in range(len(text)) if text.startswith("to ", i)] 
-        first_to = res[0]
-        story = str(text[(first_to+3):])
+        last_to = res[-1]
+        story = str(text[0:(last_to-1)])
         if validators.url(story):
             block = notion_client.get_block(story)
             story = block.title
-        users = text[text.index("@"):(first_to-1)].split(" ")
+        users = text[text.index("@"):].split(" ")
         users = [s.strip("@") for s in users]
         slack_users = slack_client.users_list()
         slack_names = []
