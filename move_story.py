@@ -19,7 +19,7 @@ def move_story(story, status, user):
     url = notion_client.get_block(row.id).get_browseable_url()
     if int(status.split(".")[0])>=6:
         send_move_message(row, story, status, user, url, "dev-experience")
-    elif int(status.split(".")[0])>=4:
+    elif int(status.split(".")[0])>=1:
         send_move_message(row, story, status, user, url, "design-review-ha")
     add_changes_data(story, status, user, row)
     #If the story is completed, trigger the notion_data script to calculate all the
@@ -112,7 +112,7 @@ def add_to_message(row, story, status):
     #10 -> Gets github pull request
     additional_info = ""
     if status.startswith("10") or status.startswith("12"):
-        pr = row.get_property("github_pull_requests_2")
+        pr = row.get_property("github_pull_request")
         if pr != "":
             additional_info = additional_info + pr.split("]")[0][1:] + " "
         else:

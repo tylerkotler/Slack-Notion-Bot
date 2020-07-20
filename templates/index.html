@@ -3,7 +3,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" type="text/css" href="static/style.css" />
+  <!-- <link rel="stylesheet" type="text/css" href="static/style.css" /> -->
   <title>Index Page</title>
 </head>
 <body>
@@ -16,33 +16,5 @@
         <input type="submit" value="Run Status Calculations" name="Run Status Calculations">
         <label> Last run: {{ today }} (UTC)</label>
     </form>
-    <div class="embed">
-      <iframe
-      title="Experience"
-      id="ha-form--iframe-tag-9edXageJ-oYjC1tOBfNYG_uKyKEFUq"
-      allow="microphone; camera;"
-      width="100%"
-      height="660"
-      frameBorder="0"
-      style="border:none;min-width:320px;max-width:400px">
-    </iframe>
-    <script type="text/javascript">
-      (function() {
-        var windowId = 'oYjC1tOBfNYG_uKyKEFUq';
-        var iframeSrc = 'https://exp.humanagency.com/e/9edXageJ/uK3_4qzuGi';
-        var node = document.getElementById('ha-form--iframe-tag-9edXageJ-oYjC1tOBfNYG_uKyKEFUq');
-        var heightSetted = node.height !== '0';
-        var hostParams = window.location.search.replace('?', '');
-        var urlParams = [hostParams].join('&');
-        var handShake = function(node) {
-          return function() {
-            node.contentWindow.postMessage({ type: 'ha-form.HANDSHAKE', windowId }, '*');
-          };
-        };
-        node.src = urlParams ? iframeSrc + '?' + urlParams : iframeSrc;
-        node.onload = handShake(node);
-      })();
-    </script>
-    </div>
 </body> 
 </html> 

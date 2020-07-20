@@ -103,9 +103,9 @@ def download():
         )
 
 statuses = {'0. On deck for Brendan': ['Brendan Lind'], 
-            '1. Verify Story Need': [],
-            '2. Verify Story Structure': [],
-            '3. Design Story': [],
+            '1. Verify Story Need': ['Brendan Lind'],
+            '2. Verify Story Structure': ['Mike Menne'],
+            '3. Design Story': ['Ben'],
             '4. Review Story Design': ['Pete', 'Hannah Allee', 'Brendan Lind', 'Mike Menne'],
             '5. Add Top Stories To Estimate Time of Story Week': ['Brendan Lind', 'Mike Menne', 'Ben'],
             '6. Estimate Time of Story': [],
