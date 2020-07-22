@@ -19,7 +19,9 @@ def move_story(story, status, user):
     url = notion_client.get_block(row.id).get_browseable_url()
     if int(status.split(".")[0])>=6:
         send_move_message(row, story, status, user, url, "dev-experience")
-    elif int(status.split(".")[0])>=1:
+    elif int(status.split(".")[0])==3:
+        send_move_message(row, story, status, user, url, "mnm-humanagency")
+    else:
         send_move_message(row, story, status, user, url, "design-review-ha")
     add_changes_data(story, status, user, row)
     #If the story is completed, trigger the notion_data script to calculate all the
@@ -120,7 +122,10 @@ def add_to_message(row, story, status):
     #11 -> Gets review app link
     if status.startswith("11"):
         review_app = row.get_property("review_app_link")
-        additional_info = additional_info + review_app.split("]")[0][1:] + " "
+        if review_app != "":
+            additional_info = additional_info + review_app.split("]")[0][1:] + " "
+        else:
+            additional_info = additional_info + ":warning: Review app link is missing :warning:"
     if status.startswith("13"):
         additional_info = additional_info + ":bangbang::smiley::robot_face::tada::rocket::fire::bangbang:"
     return additional_info
