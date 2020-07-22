@@ -1,3 +1,4 @@
+import command_hub
 import move_story
 import assign
 from config import s3_key, s3_secret, s3_bucket, notion_token_v2, slack_verification_token, slack_token
