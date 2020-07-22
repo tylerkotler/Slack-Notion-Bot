@@ -1,4 +1,4 @@
-import move
+import move_story
 from config import notion_token_v2, slack_token
 from notion.client import NotionClient
 from slack import WebClient
