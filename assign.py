@@ -17,14 +17,14 @@ def main(command_info, subcommand_info):
         for slack_name in slack_names:
             if row.slack_real_name == slack_name:
                 assigned_users.extend(row.notion_user)
-    story_row = move.find_story(story)
+    story_row = move_story.find_story(story)
     story_row.set_property("assign", assigned_users)
     url = notion_client.get_block(story_row.id).get_browseable_url()
     send_assign_message(story, slack_names, user, url, subcommand_info, "slack_bot_test")
 
 
 def send_assign_message(story, slack_names, user, url, subcommand_info, channel):
-    tag_string = move.get_tag_string(slack_names).strip("\n")
+    tag_string = move_story.get_tag_string(slack_names).strip("\n")
     user_id = slack_client.users_info(user=user)["user"]["id"]
     message_back = f"<@{user_id}> assigned " + tag_string + f"to *{story}*\n" + url
     if 'note' in subcommand_info:
