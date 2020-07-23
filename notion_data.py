@@ -28,30 +28,31 @@ def get_changes_data():
     changeView = client.get_collection_view("https://www.notion.so/humanagency/a11ad18166f445e694c64037fbfd7d5b?v=67d6efa07c224fdc89603e1d9eb6ad5d")
     
     for row in cv.collection.get_rows():
-        if row.status == '13. Complete! (On Live)':
-            if row.story not in addedStories:
+        if row.status == '13. Complete! (On Live)' and row.story not in addedStories:
             # for child in block.children:
             #     if hasattr(child, 'title') and (child.title == 'Changes') and (row.story not in addedStories):
             #         changeTable = child
             #         ids = client.search_pages_with_parent(changeTable.collection.id)
-                for change_row in changeView.collection.get_rows():
-                    block = client.get_block(change_row.id)
-                    for item in block.story:
-                        if item.title == row.story:  
-                            print(f"Scraping changes data from {row.story}") 
-                            title = block.title
-                            if block.time_correction:
-                                time = block.time_correction.start
-                            else:
-                                time = block.time
-                                time = time - timedelta(hours=5)
-                            status = block.status
-                            full_name = block.change_made_by
-                            addedStories.append(row.story)
-                            allChanges = allChanges.append({'ID': row.id, 'Story': row.story, 'Status': status, 
-                                                            'Change Date': time, 'Name': full_name, 'Title': title, 
-                                                            'Ship Date': row.ship_date.start}, ignore_index=True)
-
+            for change_row in changeView.collection.get_rows():
+                block = client.get_block(change_row.id)
+                for item in block.story:
+                    if item.title == row.story:  
+                         
+                        title = block.title
+                        if block.time_correction:
+                            time = block.time_correction.start
+                        else:
+                            time = block.time
+                            time = time - timedelta(hours=5)
+                        status = block.status
+                        full_name = block.change_made_by
+                        allChanges = allChanges.append({'ID': row.id, 'Story': row.story, 'Status': status, 
+                                                        'Change Date': time, 'Name': full_name, 'Title': title, 
+                                                        'Ship Date': row.ship_date.start}, ignore_index=True)
+            print(f"Scraping changes data from {row.story}")
+            addedStories.append(row.story)
+    
+    print(addedStories)
     return order_by_time(allChanges)
     
 #Runs through dataframe of all the changes, groups by story, and orders by time within each story
