@@ -25,6 +25,9 @@ def main(command_info, subcommand_info):
 
 def send_assign_message(story, slack_names, user, url, subcommand_info, channel):
     tag_string = move_story.get_tag_string(slack_names).strip("\n")
+    if 'tag' in subcommand_info:
+        tag_string = tag_string+move_story.get_tag_string(subcommand_info.get('tag')).strip("\n")
+    
     user_id = slack_client.users_info(user=user)["user"]["id"]
     message_back = f"<@{user_id}> assigned " + tag_string + f"to *{story}*\n" + url
     if 'note' in subcommand_info:
