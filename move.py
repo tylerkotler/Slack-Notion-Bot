@@ -138,14 +138,14 @@ def add_to_message(row, story, status):
     #10 -> Gets github pull request
     additional_info = ""
     if status.startswith("10") or status.startswith("12"):
-        pr = row.get_property("github_pull_request")
+        pr = row.get_property("github_pr")
         if pr != "":
             additional_info = additional_info + pr.split("]")[0][1:] + " "
         else:
             additional_info = additional_info + ":warning: Github PR is missing :warning:"
     #11 -> Gets review app link
     if status.startswith("11"):
-        review_app = row.get_property("review_app_link")
+        review_app = row.get_property("review_app")
         if review_app != "":
             additional_info = additional_info + review_app.split("]")[0][1:] + " "
         else:
