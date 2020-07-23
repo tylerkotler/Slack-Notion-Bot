@@ -20,9 +20,11 @@ def main(command_info, subcommand_info):
     story_row = move.find_story(story)
     story_row.set_property("assign", assigned_users)
     url = notion_client.get_block(story_row.id).get_browseable_url()
-    
+
     if 'message' not in subcommand_info or subcommand_info.get('message')!="off":
         send_assign_message(story, slack_names, user, url, subcommand_info, "slack_bot_test")
+    else:
+        print("Message in slack turned off")
 
 
 def send_assign_message(story, slack_names, user, url, subcommand_info, channel):
