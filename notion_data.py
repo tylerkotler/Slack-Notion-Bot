@@ -29,6 +29,7 @@ def get_changes_data():
     
     for row in cv.collection.get_rows():
         if row.status == '13. Complete! (On Live)' and row.story not in addedStories:
+            firstIteration = True
             # for child in block.children:
             #     if hasattr(child, 'title') and (child.title == 'Changes') and (row.story not in addedStories):
             #         changeTable = child
@@ -36,8 +37,11 @@ def get_changes_data():
             for change_row in changeView.collection.get_rows():
                 block = client.get_block(change_row.id)
                 for item in block.story:
-                    if item.title == row.story:  
-                         
+                    if item.title == row.story: 
+                        if firstIteration:
+                            print(f"Scraping changes data from {row.story}")
+                            addedStories.append(row.story)
+                            firstIteration = False  
                         title = block.title
                         if block.time_correction:
                             time = block.time_correction.start
@@ -49,8 +53,7 @@ def get_changes_data():
                         allChanges = allChanges.append({'ID': row.id, 'Story': row.story, 'Status': status, 
                                                         'Change Date': time, 'Name': full_name, 'Title': title, 
                                                         'Ship Date': row.ship_date.start}, ignore_index=True)
-            print(f"Scraping changes data from {row.story}")
-            addedStories.append(row.story)
+    
     
     print(addedStories)
     return order_by_time(allChanges)
