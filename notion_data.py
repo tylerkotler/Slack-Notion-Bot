@@ -55,7 +55,6 @@ def get_changes_data():
                                                         'Ship Date': row.ship_date.start}, ignore_index=True)
     
     
-    print(addedStories)
     return order_by_time(allChanges)
     
 #Runs through dataframe of all the changes, groups by story, and orders by time within each story
@@ -344,6 +343,19 @@ def update_spreadsheet_helper(sheet, csv_file):
     status_condensed.close()
 
     sheet.sort((2, 'des'), range=f"A6:P{last_row}")
+
+    sheet.format(f'A6:P{last_row}', {
+            "textFormat": {
+                "fontSize": 10,
+                "bold": False
+            },
+            "backgroundColor": {
+                "red": 1.0,
+                "green": 1.0,
+                "blue": 1.0
+            }
+        }
+    )
 
 file_names = [
     "changes_metrics.csv", 
