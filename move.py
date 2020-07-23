@@ -13,16 +13,25 @@ import csv
 slack_client = WebClient(slack_token)
 notion_client = NotionClient(token_v2=notion_token_v2)
 
-def main(story, status, user, subcommands):
+def main(command_info, subcommand_info):
+    story = command_info.get('story')
+    status = command_info.get('status')
+    user = command_info.get('user')
+
     row = find_story(story)
     row.set_property('status', status)
     url = notion_client.get_block(row.id).get_browseable_url()
-    if int(status.split(".")[0])>=6:
-        send_move_message(row, story, status, user, url, "dev-experience")
-    elif int(status.split(".")[0])==3:
-        send_move_message(row, story, status, user, url, "mnm-humanagency")
+
+    if 'message' not in subcommand_info or subcommand_info.get('message')!="off":
+        if int(status.split(".")[0])>=6:
+            send_move_message(row, story, status, user, url, subcommand_info, "dev-experience")
+        elif int(status.split(".")[0])==3:
+            send_move_message(row, story, status, user, url, subcommand_info, "mnm-humanagency")
+        else:
+            send_move_message(row, story, status, user, url, subcommand_info, "design-review-ha")
     else:
-        send_move_message(row, story, status, user, url, "design-review-ha")
+        print("Message in slack turned off")
+    
     add_changes_data(story, status, user, row)
     #If the story is completed, trigger the notion_data script to calculate all the
     #status times and update the spreadsheet
@@ -73,7 +82,7 @@ def add_changes_data(story, status, user, row):
     change_row.story = new_CR_block
 
 
-def send_move_message(row, story, status, user, url, channel):
+def send_move_message(row, story, status, user, url, subcommand_info, channel):
     user_id = slack_client.users_info(user=user)["user"]["id"]
     status_names = slack_bot.statuses.get(status)
     tag_string = ''
@@ -86,10 +95,19 @@ def send_move_message(row, story, status, user, url, channel):
                     status_names.append(row.slack_real_name)
     if status_names:
         tag_string = get_tag_string(status_names)
-    message_back = f"<@{user_id}> moved:\n*{story}*\nto _*{status}*_" + tag_string + "\n" + url
+    message_back = f"<@{user_id}> moved:\n*{story}*\nto _*{status}*_" + tag_string 
+
+    if 'tag' in subcommand_info:
+        message_back = message_back + get_tag_string(subcommand_info.get('tag')).strip("\n")
+    if 'note' in subcommand_info:
+        message_back = message_back + "\n" + "Note: " + subcommand_info.get('note')
+
+    message_back = message_back + "\n" + url
+
     additional_string = add_to_message(row, story, status)
     if additional_string!="":
         message_back = message_back + "\n" + additional_string
+        
     slack_client.chat_postMessage(
           channel=channel,
           text=message_back

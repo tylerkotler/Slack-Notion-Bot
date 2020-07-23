@@ -36,8 +36,3 @@ def module_from_file(module_name, file_path):
     spec.loader.exec_module(module)
     return module
 
-if __name__ == "__main__":
-    command = "test_hub"
-    command_info = {'story': "Zapier OAuth"}
-    subcommands = ["note: my extra note"]
-    main(command, command_info, subcommands)

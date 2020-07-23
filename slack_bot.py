@@ -154,9 +154,16 @@ def move_handler():
         #Get user who made move command
         user = request.form.get('user_id')
 
+        command = "move"
+        command_info = {
+            'story': story,
+            'status': status,
+            'user': user
+        }
+
         #Use threading to allow move and all functions after to execute, but code can return
         #response to slack within 3 seconds to avoid the timeout error
-        t = threading.Thread(target=move.main, args=[story, status, user, subcommands])
+        t = threading.Thread(target=command_hub.main, args=[command, command_info, subcommands])
         t.setDaemon(False)
         t.start()
 
