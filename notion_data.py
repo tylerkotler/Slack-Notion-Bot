@@ -29,29 +29,28 @@ def get_changes_data():
     
     for row in cv.collection.get_rows():
         if row.status == '13. Complete! (On Live)':
-            print(f"Scraping changes data from {row.story}") 
-            if row.story == 'Duplicate an Experience':
-                break
+            if row.story not in addedStories:
             # for child in block.children:
             #     if hasattr(child, 'title') and (child.title == 'Changes') and (row.story not in addedStories):
             #         changeTable = child
             #         ids = client.search_pages_with_parent(changeTable.collection.id)
-            for change_row in changeView.collection.get_rows():
-                block = client.get_block(change_row.id)
-                for item in block.story:
-                    if item.title == row.story:  
-                        title = block.title
-                        if block.time_correction:
-                            time = block.time_correction.start
-                        else:
-                            time = block.time
-                            time = time - timedelta(hours=5)
-                        status = block.status
-                        full_name = block.change_made_by
-                        addedStories.append(row.story)
-                        allChanges = allChanges.append({'ID': row.id, 'Story': row.story, 'Status': status, 
-                                                        'Change Date': time, 'Name': full_name, 'Title': title, 
-                                                        'Ship Date': row.ship_date.start}, ignore_index=True)
+                for change_row in changeView.collection.get_rows():
+                    block = client.get_block(change_row.id)
+                    for item in block.story:
+                        if item.title == row.story:  
+                            print(f"Scraping changes data from {row.story}") 
+                            title = block.title
+                            if block.time_correction:
+                                time = block.time_correction.start
+                            else:
+                                time = block.time
+                                time = time - timedelta(hours=5)
+                            status = block.status
+                            full_name = block.change_made_by
+                            addedStories.append(row.story)
+                            allChanges = allChanges.append({'ID': row.id, 'Story': row.story, 'Status': status, 
+                                                            'Change Date': time, 'Name': full_name, 'Title': title, 
+                                                            'Ship Date': row.ship_date.start}, ignore_index=True)
 
     return order_by_time(allChanges)
     
