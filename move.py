@@ -23,12 +23,18 @@ def main(command_info, subcommand_info):
     url = notion_client.get_block(row.id).get_browseable_url()
 
     if 'message' not in subcommand_info or subcommand_info.get('message')!="off":
+        #Moved card to status 6-13 -> send message to dev-experience
         if int(status.split(".")[0])>=6:
-            send_move_message(row, story, status, user, url, subcommand_info, "dev-experience")
+            channel = "dev-experience"
+            send_move_message(row, story, status, user, url, subcommand_info, channel)
+        #Moved card to status 3 -> send message to mnm-humanagency
         elif int(status.split(".")[0])==3:
-            send_move_message(row, story, status, user, url, subcommand_info, "mnm-humanagency")
+            channel = "mnm-humanagency"
+            send_move_message(row, story, status, user, url, subcommand_info, channel)
+        #Moved card to status 0-2, 4-5 -> send message to design-review-ha
         else:
-            send_move_message(row, story, status, user, url, subcommand_info, "design-review-ha")
+            channel = "design-review-ha"
+            send_move_message(row, story, status, user, url, subcommand_info, channel)
     else:
         print("Message in slack turned off")
     
@@ -107,7 +113,7 @@ def send_move_message(row, story, status, user, url, subcommand_info, channel):
     additional_string = add_to_message(row, story, status)
     if additional_string!="":
         message_back = message_back + "\n" + additional_string
-        
+
     slack_client.chat_postMessage(
           channel=channel,
           text=message_back
