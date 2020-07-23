@@ -82,7 +82,7 @@ def order_by_time(allChanges):
             newStory = False
             new_df = pd.concat([story_changes, new_df])
     
-    new_df.to_csv ('./changes_metrics.csv', sep="|", index = False, header=True)
+    new_df.to_csv('./changes_metrics.csv', sep="|", index = False, header=True)
     return new_df
 
 
@@ -164,6 +164,7 @@ def get_status_times(new_df):
         indexCount=indexCount+1
 
     status_file.close()
+
 
     return reverse_array
 
@@ -342,6 +343,7 @@ def update_spreadsheet_helper(sheet, csv_file):
     csv_writer.writerows(sheet.get(f"A5:P{last_row}"))
     status_condensed.close()
 
+    sheet.sort((2, 'des'), range=f"A6:P{last_row}")
 
 file_names = [
     "changes_metrics.csv", 
