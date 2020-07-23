@@ -12,7 +12,7 @@ import pandas as pd
 from config import notion_token_v2, sheets_client_email, sheets_client_id, sheets_client_x509_cert_url, sheets_private_key, sheets_private_key_id, sheets_project_id, s3_bucket, s3_key, s3_secret
 from oauth2client.service_account import ServiceAccountCredentials
 import boto3
- 
+  
 
 #Reads through all cards in Notion in column 13, pulls data out of their Changes table
 #Adds to a dataframe called allChanges

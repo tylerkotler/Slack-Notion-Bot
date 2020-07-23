@@ -13,7 +13,7 @@ import csv
 slack_client = WebClient(slack_token)
 notion_client = NotionClient(token_v2=notion_token_v2)
 
-def move_story(story, status, user):
+def main(story, status, user, subcommands):
     row = find_story(story)
     row.set_property('status', status)
     url = notion_client.get_block(row.id).get_browseable_url()

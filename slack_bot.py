@@ -1,5 +1,6 @@
-import move_story
+import move
 import assign
+import command_hub
 from config import s3_key, s3_secret, s3_bucket, notion_token_v2, slack_verification_token, slack_token
 from flask import Flask, request, Response, make_response, render_template, url_for, redirect, send_file
 from flask_bootstrap import Bootstrap
@@ -122,28 +123,44 @@ statuses = {'0. On deck for Brendan': ['Brendan Lind'],
 def move_handler():
     token = request.form.get('token')
     if token == slack_verification_token:
+        #Get text of command
         text = request.form.get('text')
         arr = text.split("\xa0")
         if len(arr) > 1:
             text = " ".join(arr)
-        res = [i for i in range(len(text)) if text.startswith("to ", i)] 
+
+        #split subcommands from command
+        commands = text.split(" --")
+        main_command = commands[0]
+        subcommands = commands[1:]
+
+
+        #Get story
+        res = [i for i in range(len(main_command)) if main_command.startswith("to ", i)] 
         last_to = res[-1]
-        story = str(text[0:(last_to-1)])
+        story = str(main_command[0:(last_to-1)])
+        if validators.url(story):
+            block = notion_client.get_block(story)
+            story = block.title
+
+        #Get status
         status = ''
-        status_num = text.split(" ")[-1]
+        status_num = main_command.split(" ")[-1]
         for key in statuses.keys():
             if key.startswith(status_num):
                 status = key
                 break
-        if validators.url(story):
-            block = notion_client.get_block(story)
-            story = block.title
+        
+        #Get user who made move command
         user = request.form.get('user_id')
-        #Use threading to allow move_story and all functions after to execute, but code can return
+
+        #Use threading to allow move and all functions after to execute, but code can return
         #response to slack within 3 seconds to avoid the timeout error
-        t = threading.Thread(target=move_story.move_story, args=[story, status, user])
+        t = threading.Thread(target=move.main, args=[story, status, user, subcommands])
         t.setDaemon(False)
         t.start()
+
+        #Reply in channel
         data = {
             "text": f"Moving {story}",
             "response_type": 'in_channel'
@@ -155,18 +172,27 @@ def move_handler():
 def assign_handler():
     token = request.form.get('token')
     if token == slack_verification_token:
-        user = request.form.get('user_id')
+        #Get text of command
         text = str(request.form.get('text'))
         arr = text.split("\xa0")
         if len(arr) > 1:
             text = " ".join(arr)
-        res = [i for i in range(len(text)) if text.startswith("to ", i)] 
+
+        #split subcommands from command
+        commands = text.split(" --")
+        main_command = commands[0]
+        subcommands = commands[1:]
+
+        #Get story
+        res = [i for i in range(len(main_command)) if main_command.startswith("to ", i)] 
         last_to = res[-1]
-        story = str(text[0:(last_to-1)])
+        story = str(main_command[0:(last_to-1)])
         if validators.url(story):
             block = notion_client.get_block(story)
             story = block.title
-        users = text[text.index("@"):].split(" ")
+
+        #Get users who are being assigned to story 
+        users = main_command[main_command.index("@"):].split(" ")
         users = [s.strip("@") for s in users]
         slack_users = slack_client.users_list()
         slack_names = []
@@ -174,11 +200,23 @@ def assign_handler():
             name = slack_user.get('name')
             if name in users:
                 slack_names.append(slack_user.get('real_name'))
+        
 
-        t = threading.Thread(target=assign.assign_people, args=[story, slack_names, user])
+        #Get user who made assign command
+        user = request.form.get('user_id')
+
+        command = "assign"
+        command_info = {
+            'story': story,
+            'slack_names': slack_names,
+            'user': user
+        
+        }
+        t = threading.Thread(target=command_hub.main, args=[command, command_info, subcommands])
         t.setDaemon(False)
         t.start()
         
+        #return response in channel
         slack_names_string = ", ".join(slack_names)
         data = {
                 "text": f"Assigning {slack_names_string} to {story}",
