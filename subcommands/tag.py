@@ -11,4 +11,4 @@ def main(text):
         name = slack_user.get('name')
         if name in users:
             slack_names.append(slack_user.get('real_name'))
-    return slack_names
+    return {'output': slack_names}

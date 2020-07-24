@@ -1,2 +1,2 @@
 def main(text):
-    return text
+    return {'output': text}
