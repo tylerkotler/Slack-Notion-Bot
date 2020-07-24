@@ -31,10 +31,10 @@ def assign(row, value):
 
     users_cv = notion_client.get_collection_view("https://www.notion.so/humanagency/8daf88aa8e384105b1a8cab2c100b731?v=97fca2b55bea4173a8ec8bbba8c8ba49")
     assigned_users = []
-    for row in users_cv.collection.get_rows():
+    for user_row in users_cv.collection.get_rows():
         for slack_name in slack_names:
-            if row.slack_real_name == slack_name:
-                assigned_users.extend(row.notion_user)
+            if user_row.slack_real_name == slack_name:
+                assigned_users.extend(user_row.notion_user)
     row.set_property("assign", assigned_users)
 
 functions = {
