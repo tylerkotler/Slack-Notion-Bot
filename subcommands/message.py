@@ -8,11 +8,12 @@ slack_client = WebClient(slack_token)
 #Returns the note text
 def main(text):
     print(text)
+    text_copy = text
     #replace all tags with the tag to send back to slack
     #IE: @tyler -> <@4625929>
     at_count = text.count("@")
     for i in range(0, at_count):
-        user_start = text.index(" @")+1
+        user_start = text_copy.index("@")+1
         user_end = user_start+1
         end = False
         while True:
@@ -38,6 +39,8 @@ def main(text):
                 tag_string = f"<@{slack_id}>"
         print(tag_string)
         text = text.replace(user, tag_string)
+        tag_string = tag_string.replace("@", "$")
+        text_copy = text_copy.replace(user, tag_string)
         print(text)
 
     return {'output': text}
