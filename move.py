@@ -22,7 +22,7 @@ def main(command_info, subcommand_info):
     row.set_property('status', status)
     url = notion_client.get_block(row.id).get_browseable_url()
 
-    if 'message' not in subcommand_info or subcommand_info.get('message')!="off":
+    if 'quiet' not in subcommand_info:
         #Moved card to status 6-13 -> send message to dev-experience
         if int(status.split(".")[0])>=6:
             channel = "dev-experience"

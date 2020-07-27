@@ -22,8 +22,11 @@ def main(command, command_info, subcommands):
 def get_subcommand_info(subcommands, command_info):
     subcommand_info = {}
     for item in subcommands:
-        subcommand = item.split(": ")[0]
-        text = item.split(": ")[1]
+        subcommand = item.split(" ")[0]
+        if len(item.split(" ")) > 1:
+            text = " ".join(item.split(" ")[1:])
+        else:
+            text = subcommand
         subcommand_file = module_from_file(f'{subcommand}.py', f'subcommands/{subcommand}.py')
         output = subcommand_file.main(text)
         if 'data' in output:
