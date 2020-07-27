@@ -33,7 +33,7 @@ def get_subcommand_help(documentation, page_link):
     help_output = ""
     for child in documentation.children:
         if 'Subcommands' in child.title:
-            for subchild in child:
+            for subchild in child.children:
                 help_output = help_output + subchild.title
                 for child1 in subchild.children:
                     help_output = help_output + "\n -- " + child1.title
