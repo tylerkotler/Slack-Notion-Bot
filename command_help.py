@@ -47,7 +47,7 @@ def get_subcommand_help(documentation, page_link):
                     for subcommand in subcommands.children:
                         title = subcommand.title.replace("**", "*")
                         title = title.replace("__", "*")
-                        help_output = help_output + str(subcommand_count) + ". " + subcommand.title
+                        help_output = help_output + str(subcommand_count) + ". " + title
                         for subcommand_child in subcommand.children:
                             help_output = help_output + "\n -- " + subcommand_child.title
                             for subcommand_child2 in subcommand_child.children:
