@@ -11,6 +11,7 @@ slack_client = WebClient(slack_token)
 def main(text):
     text_copy = text
     at_count = text.count("@")
+    #pylint: disable=unused-variable
     for i in range(0, at_count):
         if "@" in text_copy:
             user_start = text_copy.index("@")

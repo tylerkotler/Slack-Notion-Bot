@@ -48,13 +48,15 @@ def handler(data):
     row = move.find_story(story)
     if " = " in subcommand_text:
         subcommand_text = subcommand_text.replace(" = ", "=")
-    prop = subcommand_text.split("=")[0].lower()
-    prop = prop.replace(" ", "_")
-    value = subcommand_text.split("=")[1]
+    props = subcommand_text.split(", ")
+    for item in props:
+        prop = item.split("=")[0].lower()
+        prop = prop.replace(" ", "_")
+        value = item.split("=")[1]
 
-    if prop in functions:
-        functions[prop](row, value)
-    else:
-        row.set_property(prop, value)
+        if prop in functions:
+            functions[prop](row, value)
+        else:
+            row.set_property(prop, value)
 
 
