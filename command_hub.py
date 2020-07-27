@@ -23,6 +23,7 @@ def get_subcommand_info(subcommands, command_info):
     subcommand_info = {}
     for item in subcommands:
         subcommand = item.split(" ")[0]
+        subcommand = check_alias(subcommand)
         if len(item.split(" ")) > 1:
             text = " ".join(item.split(" ")[1:])
         else:
@@ -51,3 +52,12 @@ def module_from_file(module_name, file_path):
     spec.loader.exec_module(module)
     return module
 
+aliases = {
+    'mute': 'quiet'
+}
+
+def check_alias(alias):
+    command = alias
+    if alias in aliases:
+        command = aliases.get(alias)
+    return command
