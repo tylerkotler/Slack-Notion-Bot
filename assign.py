@@ -34,10 +34,8 @@ def send_assign_message(story, slack_names, user, url, subcommand_info, channel)
 
     #Move all of these checks into a) a function or b) into a subcommand_info.py file that does these
     #checks and returns back the message
-    if 'tag' in subcommand_info:
-        message_back = message_back + move.get_tag_string(subcommand_info.get('tag'))
-    if 'note' in subcommand_info:
-        message_back = message_back + "\n" + "Note: " + subcommand_info.get('note')
+    if 'message' in subcommand_info:
+        message_back = message_back + "\n" + subcommand_info.get('message')
     
     message_back = message_back + "\n" + url
     

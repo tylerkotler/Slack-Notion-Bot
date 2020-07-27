@@ -103,10 +103,8 @@ def send_move_message(row, story, status, user, url, subcommand_info, channel):
         tag_string = get_tag_string(status_names)
     message_back = f"<@{user_id}> moved:\n*{story}*\nto _*{status}*_" + tag_string 
 
-    if 'tag' in subcommand_info:
-        message_back = message_back + get_tag_string(subcommand_info.get('tag')).strip("\n")
-    if 'note' in subcommand_info:
-        message_back = message_back + "\n" + "Note: " + subcommand_info.get('note')
+    if 'message' in subcommand_info:
+        message_back = message_back + "\n" + subcommand_info.get('message')
 
     message_back = message_back + "\n" + url
 
