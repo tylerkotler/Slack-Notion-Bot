@@ -25,7 +25,7 @@ def main(text):
             if user_end == len(text):
                 end = True
                 break
-            if text[user_end]!=" ":
+            if text[user_end]!=" " or text[user_end]!="@":
                 user_end+=1
             else:
                 break
