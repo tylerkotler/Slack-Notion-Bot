@@ -131,14 +131,18 @@ def move_handler():
             text = " ".join(arr)
 
         #get help
-        if text.strip(" ") == 'help':
-            help_output = command_help.main("move")
+        if text.strip(" ") == 'help' or text.strip(" ") == 'subcommands':
+            send_data = {
+                'command': 'move',
+                'help': text.strip(" ")
+            }
+            help_output = command_help.main(send_data)
             data = {
                 "text": help_output,
                 "response_type": 'in_channel'
             }
             return Response(response=json.dumps(data), status=200, mimetype="application/json")
-
+            
         #split subcommands from command
         commands = text.split(" --")
         main_command = commands[0]
@@ -195,8 +199,12 @@ def assign_handler():
             text = " ".join(arr)
 
         #get help
-        if text.strip(" ") == 'help':
-            help_output = command_help.main("assign")
+        if text.strip(" ") == 'help' or text.strip(" ") == 'subcommands':
+            send_data = {
+                'command': 'assign',
+                'help': text.strip(" ")
+            }
+            help_output = command_help.main(send_data)
             data = {
                 "text": help_output,
                 "response_type": 'in_channel'
