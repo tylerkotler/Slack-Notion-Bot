@@ -1,6 +1,7 @@
 import move
 import assign
 import command_hub
+import command_help
 from config import s3_key, s3_secret, s3_bucket, notion_token_v2, slack_verification_token, slack_token
 from flask import Flask, request, Response, make_response, render_template, url_for, redirect, send_file
 from flask_bootstrap import Bootstrap
@@ -129,11 +130,19 @@ def move_handler():
         if len(arr) > 1:
             text = " ".join(arr)
 
+        #get help
+        if text.strip(" ") == 'help':
+            help_output = command_help.main("move")
+            data = {
+                "text": help_output,
+                "response_type": 'in_channel'
+            }
+            return Response(response=json.dumps(data), status=200, mimetype="application/json")
+
         #split subcommands from command
         commands = text.split(" --")
         main_command = commands[0]
         subcommands = commands[1:]
-
 
         #Get story
         res = [i for i in range(len(main_command)) if main_command.startswith("to ", i)] 
@@ -184,6 +193,15 @@ def assign_handler():
         arr = text.split("\xa0")
         if len(arr) > 1:
             text = " ".join(arr)
+
+        #get help
+        if text.strip(" ") == 'help':
+            help_output = command_help.main("assign")
+            data = {
+                "text": help_output,
+                "response_type": 'in_channel'
+            }
+            return Response(response=json.dumps(data), status=200, mimetype="application/json")
 
         #split subcommands from command
         commands = text.split(" --")
