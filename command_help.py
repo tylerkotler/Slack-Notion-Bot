@@ -25,7 +25,7 @@ def get_command_help(command, page_link, documentation):
                     help_output = help_output + subchild.title
                     for summary_child in summary.children:
                         help_output = help_output + "\n -- " + summary_child.title
-    help_output = help_output + f"\n\nFind full documentation on /{command} command here: {page_link}"
+    help_output = help_output + f"\n\nFind full documentation on `/{command}` command here: {page_link}"
     help_output = help_output + f"\n\nFor information on subcommands, input: `/{command} subcommands`"
     return help_output
 
