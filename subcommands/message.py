@@ -5,11 +5,11 @@ from config import slack_token
 
 slack_client = WebClient(slack_token)
 
-#Returns the note text
+#replace all tags with the tag to send back to slack
+#IE: @slavik -> <@U014ED431CK>
+#Return the text
 def main(text):
     text_copy = text
-    #replace all tags with the tag to send back to slack
-    #IE: @tyler -> <@4625929>
     at_count = text.count("@")
     for i in range(0, at_count):
         if "@" in text_copy:
