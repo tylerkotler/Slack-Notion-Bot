@@ -12,8 +12,13 @@ def main(text):
     #replace all tags with the tag to send back to slack
     #IE: @tyler -> <@4625929>
     at_count = text.count("@")
+    print(at_count)
     for i in range(0, at_count):
-        user_start = text_copy.index("@")
+        if "@" in text_copy:
+            user_start = text_copy.index("@")
+        else:
+            print("Error no @")
+            break
         user_end = user_start+1
         end = False
         while True:
