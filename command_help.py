@@ -52,6 +52,8 @@ def get_subcommand_help(documentation, page_link):
                                 help_output = help_output + "\n    -- " + subcommand_child2.title
                         help_output = help_output + "\n"
     help_output = help_output + f"\n\nFind full documentation on subcommands here: {page_link}"
+    help_output = help_output.replace("**", "*")
+    help_output = help_output.replace("__", "*")
     return help_output
 
                 
