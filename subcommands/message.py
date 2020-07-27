@@ -37,7 +37,7 @@ def main(text):
                 slack_id = slack_user.get('id')
                 tag_string = f"<@{slack_id}>"
         print(tag_string)
-        text.replace(user, tag_string)
+        text = text.replace(user, tag_string)
         print(text)
 
     return {'output': text}
