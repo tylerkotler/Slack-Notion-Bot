@@ -37,10 +37,10 @@ def get_subcommand_help(documentation, page_link):
                 if 'Syntax' in subchild.title:
                     syntax = subchild
                     for item in syntax.children:
-                        help_output = help_output + item.title
+                        help_output = help_output + "_*" + item.title + "*_"
                         for example in item.children:
                             help_output = help_output + "\n -- " + example.title
-                    help_output = help_output + "\n\nSubcommands:\n"
+                    help_output = help_output + "\n\n_*Subcommands:*_\n"
                 if 'Subcommands' in subchild.title:
                     subcommands = subchild
                     subcommand_count = 1
