@@ -14,9 +14,19 @@ def main(text):
     for i in range(0, at_count):
         user_start = text.index(" @")
         user_end = user_start+1
-        while text[user_end]!=" ":
-            user_end+=1
-        user = text[user_start:user_end]
+        end = False
+        while True:
+            if user_end == len(text):
+                end = True
+                break
+            if text[user_end]!=" ":
+                user_end+=1
+            else:
+                break
+        if end:
+            user = text[user_start:]
+        else:
+            user = text[user_start:user_end]
         slack_users = slack_client.users_list()
         tag_string = ''
         for slack_user in slack_users["members"]:
