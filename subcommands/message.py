@@ -12,7 +12,7 @@ def main(text):
     #IE: @tyler -> <@4625929>
     at_count = text.count("@")
     for i in range(0, at_count):
-        user_start = text.index(" @")
+        user_start = text.index(" @")+1
         user_end = user_start+1
         end = False
         while True:
