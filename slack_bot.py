@@ -1,7 +1,6 @@
 import move
 import assign
 import command_hub
-import command_help
 from config import s3_key, s3_secret, s3_bucket, notion_token_v2, slack_verification_token, slack_token
 from flask import Flask, request, Response, make_response, render_template, url_for, redirect, send_file
 from flask_bootstrap import Bootstrap
@@ -136,7 +135,7 @@ def move_handler():
                 'command': 'move',
                 'help': text.strip(" ")
             }
-            help_output = command_help.main(send_data)
+            help_output = command_hub.help(send_data)
             data = {
                 "text": help_output,
                 "response_type": 'in_channel'
@@ -204,7 +203,7 @@ def assign_handler():
                 'command': 'assign',
                 'help': text.strip(" ")
             }
-            help_output = command_help.main(send_data)
+            help_output = command_hub.help(send_data)
             data = {
                 "text": help_output,
                 "response_type": 'in_channel'
