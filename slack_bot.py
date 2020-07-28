@@ -134,6 +134,7 @@ def move_handler():
             print(request.form.get('channel'))
             print(request.form.getlist)
             print(request.form.items())
+            print(request.form.items)
             send_data = {
                 'command': 'move',
                 'help': text.strip(" ")
