@@ -205,13 +205,18 @@ def assign_handler():
 
         #get help
         if text.strip(" ") == 'help' or text.strip(" ") == 'subcommands':
+            channel = request.form.get('channel_id')
             send_data = {
                 'command': 'assign',
-                'help': text.strip(" ")
+                'help': text.strip(" "),
+                'channel': channel
             }
-            help_output = command_hub.help(send_data)
+            t = threading.Thread(target=command_hub.help, args=[send_data])
+            t.setDaemon(False)
+            t.start()
+            
             data = {
-                "text": help_output,
+                "text": 'Getting information...',
                 "response_type": 'in_channel'
             }
             return Response(response=json.dumps(data), status=200, mimetype="application/json")
