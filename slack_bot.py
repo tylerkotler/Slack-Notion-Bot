@@ -133,6 +133,7 @@ def move_handler():
         if text.strip(" ") == 'help' or text.strip(" ") == 'subcommands':
             print(request.form.get('channel'))
             print(request.form.getlist)
+            print(request.form.items())
             send_data = {
                 'command': 'move',
                 'help': text.strip(" ")
