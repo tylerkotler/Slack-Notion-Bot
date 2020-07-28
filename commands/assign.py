@@ -1,4 +1,6 @@
-import move
+import sys, os
+sys.path.append(os.path.realpath(".."))
+from commands import move
 from config import notion_token_v2, slack_token
 from notion.client import NotionClient
 from slack import WebClient

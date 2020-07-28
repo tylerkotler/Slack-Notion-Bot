@@ -1,3 +1,5 @@
+import sys, os
+sys.path.append(os.path.realpath(".."))
 from config import slack_token, notion_token_v2
 import notion_data
 import slack_bot

@@ -18,7 +18,7 @@ from slack import WebClient
 
 def main(command, command_info, subcommands):
     subcommand_info = get_subcommand_info(subcommands, command_info)
-    command_file = module_from_file(f'{command}.py', f'{command}.py')
+    command_file = module_from_file(f'{command}.py', f'commands/{command}.py')
     command_file.main(command_info, subcommand_info)
 
 
