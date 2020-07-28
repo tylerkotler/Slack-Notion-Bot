@@ -1,9 +1,9 @@
 import sys, os
 sys.path.append(os.path.realpath(".."))
-from config import slack_token, notion_token_v2
-import notion_data
-import slack_bot
 #pylint: disable=import-error
+from config import slack_token, notion_token_v2
+from data import notion_data
+import slack_bot
 from notion.client import NotionClient
 from notion.collection import CollectionRowBlock
 from notion.collection import NotionDate

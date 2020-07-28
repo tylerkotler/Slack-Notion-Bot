@@ -1,4 +1,5 @@
 from commands import move, assign
+from data import notion_data
 import command_hub
 from config import s3_key, s3_secret, s3_bucket, notion_token_v2, slack_verification_token, slack_token
 from flask import Flask, request, Response, make_response, render_template, url_for, redirect, send_file
@@ -9,7 +10,6 @@ import json
 import csv
 import threading
 import requests
-import notion_data
 import validators
 import re
 import datetime  

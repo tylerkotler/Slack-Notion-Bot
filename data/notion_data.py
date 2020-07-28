@@ -1,3 +1,6 @@
+import sys, os
+sys.path.append(os.path.realpath(".."))
+#pylint: disable=import-error
 from notion.client import NotionClient
 from notion.collection import NotionDate
 import csv 
