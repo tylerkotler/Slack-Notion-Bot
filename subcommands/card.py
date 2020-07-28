@@ -1,10 +1,10 @@
 import sys, os
 sys.path.append(os.path.realpath(".."))
+#pylint: disable=import-error
 from commands import move
 import inspect
 from slack import WebClient
 from config import slack_token, notion_token_v2
-#pylint: disable=import-error
 from notion.client import NotionClient 
 
 
