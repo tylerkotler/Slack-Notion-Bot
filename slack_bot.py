@@ -131,6 +131,7 @@ def move_handler():
 
         #get help
         if text.strip(" ") == 'help' or text.strip(" ") == 'subcommands':
+            print(request.form.get('channel'))
             send_data = {
                 'command': 'move',
                 'help': text.strip(" ")
@@ -143,7 +144,8 @@ def move_handler():
             return Response(response=json.dumps(data), status=200, mimetype="application/json")
             
         #split subcommands from command
-        commands = text.split(" --")
+        text = text.replace(" --", "--")
+        commands = text.split("--")
         main_command = commands[0]
         subcommands = commands[1:]
 
@@ -211,7 +213,8 @@ def assign_handler():
             return Response(response=json.dumps(data), status=200, mimetype="application/json")
 
         #split subcommands from command
-        commands = text.split(" --")
+        text = text.replace(" --", "--")
+        commands = text.split("--")
         main_command = commands[0]
         subcommands = commands[1:]
 

@@ -37,8 +37,20 @@ def assign(row, value):
                 assigned_users.extend(user_row.notion_user)
     row.set_property("assign", assigned_users)
 
+def priority(row, value):
+    priorities = {
+        '1': '1 (Critical)',
+        '2': '2 (High Priority)',
+        '3': '3 (Medium Priority)',
+        '4': '4 (Low Priority)',
+        '5': '5 (No Priority)'
+    }
+    priority = priorities.get(value.strip(" "))
+    row.set_property('priority', priority)
+
 functions = {
-    'assign': assign
+    'assign': assign, 
+    'priority': priority
 }
 
 def handler(data):
