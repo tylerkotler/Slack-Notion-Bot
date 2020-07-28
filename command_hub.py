@@ -12,8 +12,9 @@
 # create folder called commands with py files of all main commands (change move_story to move)
 # create folder called subcommands with py files of all subcommands
 import importlib.util
-from config import notion_token_v2
+from config import notion_token_v2, slack_token
 from notion.client import NotionClient
+from slack import WebClient
 
 def main(command, command_info, subcommands):
     subcommand_info = get_subcommand_info(subcommands, command_info)
@@ -73,11 +74,16 @@ def help(send_data):
     page_link = "https://www.notion.so/humanagency/Slack-Bot-Dwayne-42cf24713efb437b9feeb2195c64491e"
     documentation = notion_client.get_block(page_link)
 
+    slack_client = WebClient(slack_token)
+    message_back = ''
     if help_needed == 'subcommands':
-        return get_subcommand_help(documentation, page_link)
+        message_back = get_subcommand_help(documentation, page_link)
     else:
-        return get_command_help(command, page_link, documentation)
-    
+        message_back = get_command_help(command, page_link, documentation)
+    slack_client.chat_postMessage(
+          channel=send_data.get('channel'),
+          text=message_back
+    )
 
 def get_command_help(command, page_link, documentation):
     help_output = ""
