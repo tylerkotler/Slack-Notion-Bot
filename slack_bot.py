@@ -142,7 +142,7 @@ def move_handler():
             t.start()
             
             data = {
-                "text": 'Getting help...',
+                "text": 'Getting information...',
                 "response_type": 'in_channel'
             }
             return Response(response=json.dumps(data), status=200, mimetype="application/json")
