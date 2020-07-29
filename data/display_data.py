@@ -34,6 +34,7 @@ def scatter(status, furthest):
         obj = s3.get_object(Bucket=s3_bucket, Key='status_times_condensed.csv')
         df = pd.read_csv(io.BytesIO(obj['Body'].read()))
     # copy_df = df
+    df.columns = df.iloc[0]
     df['Ship Date']=pd.to_datetime(df['Ship Date'])
     df[status] = pd.to_numeric(df[status], downcast="float")
     # df.columns = df.iloc[0]
