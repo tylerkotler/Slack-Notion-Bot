@@ -22,19 +22,18 @@ s3 = boto3.client(
 def scatter(status, furthest):
     
     if furthest == 'True':
-        # with open('status_times_furthest_condensed.csv', 'wb') as f:
-        #     s3.download_fileobj(s3_bucket, 'status_times_furthest_condensed.csv', f)
-        # df = pd.read_csv('status_times_furthest_condensed.csv', sep="|")
-        obj = s3.get_object(Bucket=s3_bucket, Key='status_times_furthest_condensed.csv')
-        df = pd.read_csv(io.BytesIO(obj['Body'].read()))
+        with open('status_times_furthest_condensed.csv', 'wb') as f:
+            s3.download_fileobj(s3_bucket, 'status_times_furthest_condensed.csv', f)
+        df = pd.read_csv('status_times_furthest_condensed.csv', sep="|")
+        # obj = s3.get_object(Bucket=s3_bucket, Key='status_times_furthest_condensed.csv')
+        # df = pd.read_csv(io.BytesIO(obj['Body'].read()))
     else:
-        # with open('status_times_condensed.csv', 'wb') as f:
-        #     s3.download_fileobj(s3_bucket, 'status_times_condensed.csv', f)
-        # df = pd.read_csv('status_times_condensed.csv', sep="|")
-        obj = s3.get_object(Bucket=s3_bucket, Key='status_times_condensed.csv')
-        df = pd.read_csv(io.BytesIO(obj['Body'].read()))
+        with open('status_times_condensed.csv', 'wb') as f:
+            s3.download_fileobj(s3_bucket, 'status_times_condensed.csv', f)
+        df = pd.read_csv('status_times_condensed.csv', sep="|")
+        # obj = s3.get_object(Bucket=s3_bucket, Key='status_times_condensed.csv')
+        # df = pd.read_csv(io.BytesIO(obj['Body'].read()))
     # copy_df = df
-    df.columns = df.iloc[0]
     df['Ship Date']=pd.to_datetime(df['Ship Date'])
     df[status] = pd.to_numeric(df[status], downcast="float")
     # df.columns = df.iloc[0]
