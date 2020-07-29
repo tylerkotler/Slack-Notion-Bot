@@ -1,0 +1,38 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="static/style.css">
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-2.1.1.min.js"></script>
+    <title>Scatter Plot</title>
+    {{ script | safe }}
+</head>
+<body>
+    <form action="/" method="GET">
+        <button type="submit">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        </button>
+    </form>
+    <div class='bokeh'>
+        <header>
+            <h2>Hours Over Time</h2>
+            {% if furthest == 'True' %}
+            <p>(Furthest Points)</p>
+            {% endif %}
+            </header>
+        <form method="post" action="/display_data">
+            <label for="statuses">Change Status: </label>
+            <select id="statuses" name="statuses">
+                {% for status in statuses %}
+                    <option value="{{ status }}">{{ status }}</option>
+                {% endfor %}
+            </select>
+            <input type="hidden" id="hidden_furthest" name="hidden_furthest" value="{{ furthest }}"> 
+            <input type="submit" value="Plot">
+        </form>  
+        {{ div | safe }}
+    </div>
+</body>
+</html>

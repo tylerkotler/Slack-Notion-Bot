@@ -16,5 +16,17 @@
         <input type="submit" value="Run Status Calculations" name="Run Status Calculations">
         <label> Last run: {{ today }} (UTC)</label>
     </form>
+    <br>
+    <form method="post" action="/display_data">
+        <label for="statuses">Scatter Plot for Status:</label>
+        <select id="statuses" name="statuses">
+            {% for status in statuses %}
+                <option value="{{ status }}">{{ status }}</option>
+            {% endfor %}
+        </select>
+        <input type="checkbox" id="furthest" name="furthest" value="True">
+        <label for="furthest">Furthest Points</label><br>
+        <input type="submit" value="Plot">
+    </form>
 </body> 
 </html> 

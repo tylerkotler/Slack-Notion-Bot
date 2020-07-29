@@ -1,5 +1,5 @@
 from commands import move, assign
-from data import notion_data
+from data import notion_data, display_data
 import command_hub
 from config import s3_key, s3_secret, s3_bucket, notion_token_v2, slack_verification_token, slack_token
 from flask import Flask, request, Response, make_response, render_template, url_for, redirect, send_file
@@ -19,6 +19,7 @@ import urllib
 import os
 import io
 from zipfile import ZipFile
+from jinja2 import Template
 
 
 #This is the home base of the flask app. It handles the different routes and 
@@ -36,6 +37,21 @@ s3 = boto3.client(
 notion_client = NotionClient(token_v2=notion_token_v2)
 slack_client = WebClient(slack_token)
 
+statuses = {'0. On deck for Brendan': ['Brendan Lind'], 
+            '1. Verify Story Need': ['Brendan Lind'],
+            '2. Verify Story Structure': ['Mike Menne'],
+            '3. Design Story': ['Ben'],
+            '4. Review Story Design': ['Pete', 'Hannah Allee', 'Brendan Lind', 'Mike Menne'],
+            '5. Add Top Stories To Estimate Time of Story Week': ['Brendan Lind', 'Mike Menne', 'Ben'],
+            '6. Estimate Time of Story': [],
+            '7. Verify & Add Top Bugs': [],
+            '8. Start This Week (Next up)': [],
+            '9. Finish This Week (In Progress)': [],
+            '10. Code Review': ['Mike Menne'],
+            '11. QA Review': ['Tyler Kotler', 'Slavik'],
+            '12. PO Verify (Test UX & Push)': ['Ben', 'Volodymyr Solin'],
+            '13. Complete! (On Live)': []
+}
 
 @app.route("/")
 def home():
@@ -46,7 +62,7 @@ def home():
                 currentDate = row[0]
     else: 
         currentDate = "Hasn't been run since last Heroku build"
-    return render_template("index.html", today=currentDate)
+    return render_template("index.html", today=currentDate, statuses=statuses.keys())
 
 @app.route("/run-data", methods=['POST'])
 def run_data():
@@ -55,6 +71,32 @@ def run_data():
     
 def return_home():
     return redirect('/')
+
+@app.route("/display_data", methods=['POST', 'GET'])
+def display():
+    
+    furthest = "False"
+    try:
+        if request.form['furthest'] == 'True':
+            furthest = 'True'
+    except:
+        pass
+    try:
+        if request.form['hidden_furthest'] == 'True':
+            furthest = 'True'
+    except:
+        pass
+    status = request.form['statuses']
+    # data_display.scatter(status)
+    script, div = display_data.scatter(status, furthest)
+    
+    # with open('templates/display-data.html', 'r') as f:
+    #     t = Template(f.read())
+    # vals = {'scatter_plot': div, 'js_script': script}
+    # with open('templates/display-data.html', 'w') as f:
+    #     f.write(t.render(vals))
+         
+    return render_template("display_data.html", script=script, div=div, statuses=statuses, furthest=furthest)
 
 @app.route("/files", methods=['POST', 'GET'])
 def files():
@@ -102,21 +144,6 @@ def download():
             headers={"Content-Disposition": f"attachment;filename={key}"}
         )
 
-statuses = {'0. On deck for Brendan': ['Brendan Lind'], 
-            '1. Verify Story Need': ['Brendan Lind'],
-            '2. Verify Story Structure': ['Mike Menne'],
-            '3. Design Story': ['Ben'],
-            '4. Review Story Design': ['Pete', 'Hannah Allee', 'Brendan Lind', 'Mike Menne'],
-            '5. Add Top Stories To Estimate Time of Story Week': ['Brendan Lind', 'Mike Menne', 'Ben'],
-            '6. Estimate Time of Story': [],
-            '7. Verify & Add Top Bugs': [],
-            '8. Start This Week (Next up)': [],
-            '9. Finish This Week (In Progress)': [],
-            '10. Code Review': ['Mike Menne'],
-            '11. QA Review': ['Tyler Kotler', 'Slavik'],
-            '12. PO Verify (Test UX & Push)': ['Ben', 'Volodymyr Solin'],
-            '13. Complete! (On Live)': []
-}
 
 @app.route("/slack/move", methods=['POST'])
 def move_handler():
