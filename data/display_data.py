@@ -24,7 +24,7 @@ def scatter(status, furthest):
     source = ColumnDataSource(df)
 
     # output_file('templates/display-data.html')
-    output_file('scatter.html')
+    # output_file('scatter.html')
 
     # ship_date_list = source.data['Ship Date'].tolist()
 
