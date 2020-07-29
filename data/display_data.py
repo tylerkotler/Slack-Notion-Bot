@@ -7,14 +7,26 @@ from bokeh.resources import CDN
 import pandas as pd
 import datetime
 from string import Template
-# import sys, os
-# sys.path.append(os.path.realpath(".."))
+import sys, os
+sys.path.append(os.path.realpath(".."))
+from config import s3_key, s3_bucket, s3_secret
+import boto3 
+
+s3 = boto3.client(
+        's3',
+        aws_access_key_id=s3_key,
+        aws_secret_access_key=s3_secret
+)
 
 def scatter(status, furthest):
     
     if furthest == 'True':
+        with open('status_times_furthest_condensed.csv', 'wb') as f:
+            s3.download_fileobj(s3_bucket, 'status_times_furthest_condensed.csv', f)
         df = pd.read_csv('data/status_times_furthest_condensed.csv', sep="|")
     else:
+        with open('status_times_condensed.csv', 'wb') as f:
+            s3.download_fileobj(s3_bucket, 'status_times_condensed.csv', f)
         df = pd.read_csv('data/status_times_condensed.csv', sep="|")
     # copy_df = df
     df['Ship Date']=pd.to_datetime(df['Ship Date'])
