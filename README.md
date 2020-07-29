@@ -1,12 +1,10 @@
 # notion-analytics/bot
 ## Structure:
-**1. slack_bot** -> it is a Flask app that takes in slash commands on Slack and handles reqests through the front end webpage of the bot, which can be found at https://notion-slackbot.herokuapp.com/ . Here, the s3 files are listed and can be downloaded (instead of having to go through the aws website).
+**1. slack_bot.py** -> It is a Flask app that takes in slash commands on Slack and handles reqests through the front end webpage of the bot, which can be found at https://notion-slackbot.herokuapp.com/ . Here, the s3 files are listed and can be downloaded (instead of having to go through the aws website).
 
-**2. move_story** -> its move_story method is called by the move_handler method in slack_bot, which moves a story to a new column on Notion, adds changes data on Notion, and sends back a response. If the story moves to column 13, it triggers the notion_data script.
+**2. command_hub.py** -> It is the central hub for all commands. The slack_bot file takes in the commands and sends them to the command hub, where it parses out the subcommands and dynamically finds, sends, and receives information from the command and subcommand files. It also handles the "help" and "subcommands" inputs, sending back information from the bot's documentation on Notion.
 
-**3. notion_data** -> it runs through all the changes in the Changes table, calculates status times, adds the data to csvs, and writes it to the HA Google Sheets. The csv files are stored in Amazon AWS S3 human-agency-slackbot bucket, along with the 2 jupyter notebook (ipynb) files that contain visualizations of the data.
-
-**4. assign** -> it assigns people to a specific story on Notion. It also sends a message back into Slack notifying the people assigned.
+**3. commands and subcommands folders** -> Each command and subcommand has it's own python file, which allows it to be dynamically located and called by the command hub. They handle receiving, executing, and sending back the information needed to complete the commands.
 
 ## Documentation:
 All documentation for the bot is on Notion in Tech -> Documentation -> Slack Bot
