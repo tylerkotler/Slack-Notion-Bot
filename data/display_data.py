@@ -23,11 +23,11 @@ def scatter(status, furthest):
     if furthest == 'True':
         with open('status_times_furthest_condensed.csv', 'wb') as f:
             s3.download_fileobj(s3_bucket, 'status_times_furthest_condensed.csv', f)
-        df = pd.read_csv('data/status_times_furthest_condensed.csv', sep="|")
+        df = pd.read_csv('status_times_furthest_condensed.csv', sep="|")
     else:
         with open('status_times_condensed.csv', 'wb') as f:
             s3.download_fileobj(s3_bucket, 'status_times_condensed.csv', f)
-        df = pd.read_csv('data/status_times_condensed.csv', sep="|")
+        df = pd.read_csv('status_times_condensed.csv', sep="|")
     # copy_df = df
     df['Ship Date']=pd.to_datetime(df['Ship Date'])
     df[status] = pd.to_numeric(df[status], downcast="float")
