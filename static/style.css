@@ -34,7 +34,7 @@ th{
     font-size: 10px;
 }
 
-.sheets_div{
+/* .sheets_div{
     text-align: center;
     height: 800px;
     width: 100%;
@@ -51,7 +51,7 @@ th{
     margin-right: auto;
     margin: auto;
     display: block; 
-}
+} */
 
 iframe{
     height: 3000px;
