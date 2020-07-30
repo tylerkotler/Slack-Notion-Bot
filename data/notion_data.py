@@ -282,8 +282,8 @@ def update_spreadsheet():
     }
     creds = ServiceAccountCredentials.from_json_keyfile_dict(sheets_auth_data, scope)
     client = gspread.authorize(creds)
-    sheet = client.open('Human Agency Experience Dashboard').worksheet("Notion_Changes_Data")
-    sheet_furthest = client.open('Human Agency Experience Dashboard').worksheet("Notion_Changes_Data_Furthest")
+    sheet = client.open('Notion Metrics').worksheet("Notion_Changes_Data")
+    sheet_furthest = client.open('Notion Metrics').worksheet("Notion_Changes_Data_Furthest")
     
     update_spreadsheet_helper(sheet, 'status_times.csv')
     
