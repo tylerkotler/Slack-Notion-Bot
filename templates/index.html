@@ -12,11 +12,6 @@
         <input type="submit" value="S3 Files" name="S3 Files"/>
     </form> 
     <br>
-    <form method="post" action="/run-data">
-        <input type="submit" value="Run Status Calculations" name="Run Status Calculations">
-        <label> Last run: {{ today }} (UTC)</label>
-    </form>
-    <br>
     <form method="post" action="/display_data">
         <label for="statuses">Scatter Plot for Status:</label>
         <select id="statuses" name="statuses">
@@ -32,5 +27,11 @@
     <form method="post" action="/sheets_data">
         <input type="submit" value="Sheets Changes Data" name="Sheets Changes Data">
     </form>
+    <br>
+    <form method="post" action="/run-data">
+        <input type="submit" value="Run Status Calculations" name="Run Status Calculations">
+        <label> Last run: {{ today }} (UTC)</label>
+    </form>
+    <span>Note: This will cause a timeout error, but it still runs all the calculations/data uploads in the background</span>
 </body> 
 </html> 

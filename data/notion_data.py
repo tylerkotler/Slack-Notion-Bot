@@ -360,6 +360,13 @@ def update_spreadsheet_helper(sheet, csv_file):
         }
     )
 
+def update_last_run():
+    currentDate = datetime.datetime.now().strftime("%m/%d/%Y %H:%M")
+    with open('last_status_calc.csv', 'w') as f:
+        f.truncate(0)
+        file_writer = csv.writer(f)
+        file_writer.writerow([currentDate])
+
 file_names = [
     "changes_metrics.csv", 
     "status_times_condensed.csv",
@@ -390,6 +397,7 @@ def main():
     get_status_times_furthest(reverse_array)
     get_status_totals()
     update_spreadsheet()
+    update_last_run()
     upload_files_to_s3()
 
 

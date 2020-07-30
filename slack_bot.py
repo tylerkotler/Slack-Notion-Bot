@@ -55,13 +55,8 @@ statuses = {'0. On deck for Brendan': ['Brendan Lind'],
 
 @app.route("/")
 def home():
-    if os.path.isfile('./last_status_calc.csv'):
-        with open('last_status_calc.csv', 'r') as f:
-            csv_reader = csv.reader(f)
-            for row in csv_reader:
-                currentDate = row[0]
-    else: 
-        currentDate = "Hasn't been run since last Heroku build"
+    obj = s3.get_object(Bucket=s3_bucket, Key='last_status_calc.csv')
+    currentDate = obj['Body'].read().decode('utf-8')
     return render_template("index.html", today=currentDate, statuses=statuses.keys())
 
 @app.route("/run-data", methods=['POST'])
