@@ -79,7 +79,7 @@ def scatter(status, furthest):
 
     hover.formatters = {
         "@{Ship Date}": "datetime",
-        "@{11. QA Review}": "printf",
+        f"@\u007b{status}\u007d": "printf",
 
     }
 
