@@ -52,3 +52,8 @@ th{
     margin: auto;
     display: block; 
 }
+
+iframe{
+    height: 800px;
+    max-width: 100%;
+}
