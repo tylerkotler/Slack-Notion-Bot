@@ -61,10 +61,7 @@ def home():
 
 @app.route("/run-data", methods=['POST'])
 def run_data():
-    return_home()
     notion_data.main()
-    
-def return_home():
     return redirect('/')
 
 @app.route("/display_data", methods=['POST', 'GET'])
