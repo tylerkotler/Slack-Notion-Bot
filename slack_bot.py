@@ -87,16 +87,13 @@ def display():
     except:
         pass
     status = request.form['statuses']
-    # data_display.scatter(status)
     script, div = display_data.scatter(status, furthest)
     
-    # with open('templates/display-data.html', 'r') as f:
-    #     t = Template(f.read())
-    # vals = {'scatter_plot': div, 'js_script': script}
-    # with open('templates/display-data.html', 'w') as f:
-    #     f.write(t.render(vals))
-         
     return render_template("display_data.html", script=script, div=div, statuses=statuses, furthest=furthest)
+
+@app.route("/sheets_data", methods=['POST', 'GET'])
+def sheets():
+    return render_template('sheets_data.html')
 
 @app.route("/files", methods=['POST', 'GET'])
 def files():

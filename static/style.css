@@ -33,3 +33,16 @@ th{
 .subtitle{
     font-size: 10px;
 }
+
+.sheets_div{
+    text-align: center;
+}
+
+.changes{
+    height: 800px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin: auto;
+    display: block;
+}
