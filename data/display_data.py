@@ -19,31 +19,23 @@ s3 = boto3.client(
         aws_secret_access_key=s3_secret
 )
 
+#Build bokeh scatter plot of the hours over time for a specific status
 def scatter(status, furthest):
     
+    #Check if furthest points is selected and get correct data
     if furthest == 'True':
         with open('status_times_furthest_condensed.csv', 'wb') as f:
             s3.download_fileobj(s3_bucket, 'status_times_furthest_condensed.csv', f)
         df = pd.read_csv('status_times_furthest_condensed.csv', sep="|")
-        # obj = s3.get_object(Bucket=s3_bucket, Key='status_times_furthest_condensed.csv')
-        # df = pd.read_csv(io.BytesIO(obj['Body'].read()))
     else:
         with open('status_times_condensed.csv', 'wb') as f:
             s3.download_fileobj(s3_bucket, 'status_times_condensed.csv', f)
         df = pd.read_csv('status_times_condensed.csv', sep="|")
-        # obj = s3.get_object(Bucket=s3_bucket, Key='status_times_condensed.csv')
-        # df = pd.read_csv(io.BytesIO(obj['Body'].read()))
-    # copy_df = df
+        
     df['Ship Date']=pd.to_datetime(df['Ship Date'])
     df[status] = pd.to_numeric(df[status], downcast="float")
-    # df.columns = df.iloc[0]
 
     source = ColumnDataSource(df)
-
-    # output_file('templates/display-data.html')
-    # output_file('scatter.html')
-
-    # ship_date_list = source.data['Ship Date'].tolist()
 
     p = figure(
         x_axis_type='datetime',
@@ -66,6 +58,7 @@ def scatter(status, furthest):
         source=source,
     )
 
+    #Custom html hover box for individual points on scatter plot
     hover = HoverTool()
     html = """
         <div>
@@ -87,6 +80,7 @@ def scatter(status, furthest):
 
     save(p)
 
+    #Send back js and html 
     script, div = components(p)
 
     return script, div

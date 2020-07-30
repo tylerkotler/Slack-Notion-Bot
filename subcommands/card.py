@@ -9,12 +9,14 @@ from notion.client import NotionClient
 
 
 def main(text):
+    #Sends back data in output requesting the story
     output = {
         'data': ['story'],
         'output': 'Notion property'
     }
     return output
 
+#Handles assigning people to card
 def assign(row, value):
     slack_client = WebClient(slack_token)
 
@@ -37,6 +39,7 @@ def assign(row, value):
                 assigned_users.extend(user_row.notion_user)
     row.set_property("assign", assigned_users)
 
+#Handles setting a priority based on a number input
 def priority(row, value):
     priorities = {
         '1': '1 (Critical)',
@@ -53,19 +56,25 @@ functions = {
     'priority': priority
 }
 
+#Handler for card subcommand
+#Takes in the data that was requested to be sent from the command hub
 def handler(data):
     story = data.get('story')
     subcommand_text = data.get('text')
     
+    #Find the story
     row = move.find_story(story)
     if " = " in subcommand_text:
         subcommand_text = subcommand_text.replace(" = ", "=")
     props = subcommand_text.split(", ")
+    #Set properties on Notion card
     for item in props:
         prop = item.split("=")[0].lower()
         prop = prop.replace(" ", "_")
         value = item.split("=")[1]
 
+        #Some properties have their own functions (assign, priority)
+        #Call the function if so. If not, just set the property to the value
         if prop in functions:
             functions[prop](row, value)
         else:

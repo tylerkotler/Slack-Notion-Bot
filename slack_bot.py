@@ -28,7 +28,7 @@ from jinja2 import Template
 app = Flask(__name__)  
 bootstrap = Bootstrap(app) 
 
-
+#Authentication for Amazon s3, Notion, and Slack APIs
 s3 = boto3.client(
         's3',
         aws_access_key_id=s3_key,
@@ -37,6 +37,9 @@ s3 = boto3.client(
 notion_client = NotionClient(token_v2=notion_token_v2)
 slack_client = WebClient(slack_token)
 
+#Dict of statuses with people to automatically tag when a story moves into a status
+#Use their real name on Slack! (Found by clicking on their profile and using the bolded name under the photo)
+#Good ex: Volodymyr Solin instead of vladimirsolin
 statuses = {'0. On deck for Brendan': ['Brendan Lind'], 
             '1. Verify Story Need': ['Brendan Lind'],
             '2. Verify Story Structure': ['Mike Menne'],
@@ -49,12 +52,14 @@ statuses = {'0. On deck for Brendan': ['Brendan Lind'],
             '9. Finish This Week (In Progress)': [],
             '10. Code Review': ['Mike Menne'],
             '11. QA Review': ['Tyler Kotler', 'Slavik'],
-            '12. PO Verify (Test UX & Push)': ['Ben', 'Volodymyr Solin'],
+            '12. PO Verify (Test UX & Push)': ['Ben', 'Volodymyr Solin'], 
             '13. Complete! (On Live)': []
 }
 
+#Routes to home page of the app (https://notion-slackbot.herokuapp.com/)
 @app.route("/")
 def home():
+    #Get the time displayed for the last notion_data run
     obj = s3.get_object(Bucket=s3_bucket, Key='last_status_calc.csv')
     currentDate = obj['Body'].read().decode('utf-8')
     return render_template("index.html", today=currentDate, statuses=statuses.keys())
@@ -64,9 +69,10 @@ def run_data():
     notion_data.main()
     return redirect('/')
 
+#Page with scatter plots for each status 
 @app.route("/display_data", methods=['POST', 'GET'])
 def display():
-    
+    #Check if the request has furthest points selected in order to display the correct data
     furthest = "False"
     try:
         if request.form['furthest'] == 'True':
@@ -79,23 +85,28 @@ def display():
     except:
         pass
     status = request.form['statuses']
+
+    #Builds the bokeh plot, sends back the js and html to embed in the page
     script, div = display_data.scatter(status, furthest)
     
     return render_template("display_data.html", script=script, div=div, statuses=statuses, furthest=furthest, selected_status=status)
 
+#Page with embedded Google Sheets data
 @app.route("/sheets_data", methods=['POST', 'GET'])
 def sheets():
     return render_template('sheets_data.html')
 
+#Table with all files from s3 that can be downloaded
 @app.route("/files", methods=['POST', 'GET'])
 def files():
     files = s3.list_objects(Bucket=s3_bucket)['Contents']
     return render_template("files.html", files=files)
 
-
+#Download s3 files
 @app.route("/download", methods=['POST'])
 def download():
     key = request.form['key']
+    #Download all files into a zip
     if key=="all_keys":
         s3_resource = boto3.resource(
             's3',
@@ -118,8 +129,10 @@ def download():
             as_attachment=True,
             attachment_filename='changes_data.zip'
         )
+    #Download the individually selected file
     else:
         file_obj = s3.get_object(Bucket=s3_bucket, Key=key)
+        #Make mime_type ipynb for the jupyter notebook files (the guess_type function isn't great)
         if(key.split('.')[1]=="ipynb"):
             mime_type = 'application/x-ipynb+json'
         else:    
@@ -133,7 +146,7 @@ def download():
             headers={"Content-Disposition": f"attachment;filename={key}"}
         )
 
-
+#Handles the move command
 @app.route("/slack/move", methods=['POST'])
 def move_handler():
     token = request.form.get('token')
@@ -195,7 +208,7 @@ def move_handler():
         }
 
         #Use threading to allow move and all functions after to execute, but code can return
-        #response to slack within 3 seconds to avoid the timeout error
+        #response to slack within 3 seconds to avoid the Slack timeout error
         t = threading.Thread(target=command_hub.main, args=[command, command_info, subcommands])
         t.setDaemon(False)
         t.start()
@@ -207,7 +220,7 @@ def move_handler():
         }
         return Response(response=json.dumps(data), status=200, mimetype="application/json")
 
-
+#Handles the assign command
 @app.route("/slack/assign", methods=['POST'])
 def assign_handler():
     token = request.form.get('token')
@@ -284,12 +297,12 @@ def assign_handler():
         return Response(response=json.dumps(data), status=200, mimetype="application/json")
 
 
-
+#Authorize (not needed for this app, only if it were to be deployed to another Slack team)
 @app.route("/slack/authorize", methods=['GET'])
 def authenticate():
     return render_template("authorize.html")
 
 
-# Start the server on port 3000
+# Start the server
 if __name__ == "__main__":
   app.run(port=3000)

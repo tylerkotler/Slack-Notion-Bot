@@ -1,5 +1,6 @@
 from decouple import config
 
+#All environment variables are stored in Heroku in config vars
 slack_token = config('SLACK_TOKEN')
 slack_verification_token = config('SLACK_VERIFICATION_TOKEN')
 notion_token_v2 = config('NOTION_TOKEN_V2')

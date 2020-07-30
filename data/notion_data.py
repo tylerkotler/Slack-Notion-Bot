@@ -17,26 +17,23 @@ from oauth2client.service_account import ServiceAccountCredentials
 import boto3
   
 
-#Reads through all cards in Notion in column 13, pulls data out of their Changes table
+#Reads through all cards in Notion in column 13, pulls their changes data from Changes table
 #Adds to a dataframe called allChanges
 def get_changes_data():
     print("Scraping changes data off Notion stories")
     print()
 
-    # client = NotionClient(token_v2=user_info.token_v2, monitor=True, start_monitoring=True)
     client = NotionClient(token_v2=notion_token_v2)
     cv = client.get_collection_view("https://www.notion.so/humanagency/53a3254e681e4eb6ab53e037d0b2f451?v=68afa83bf93f4c57aa38ffd807eb3bf1")
     addedStories = []
     allChanges = pd.DataFrame(columns=('ID', 'Story', 'Status', 'Change Date', 'Name', 'Title', 'Ship Date'))
     changeView = client.get_collection_view("https://www.notion.so/humanagency/a11ad18166f445e694c64037fbfd7d5b?v=67d6efa07c224fdc89603e1d9eb6ad5d")
     
+    #Iterate through the stories on the Product Lineup, check if in column 13
     for row in cv.collection.get_rows():
         if row.status == '13. Complete! (On Live)' and row.story not in addedStories:
             firstIteration = True
-            # for child in block.children:
-            #     if hasattr(child, 'title') and (child.title == 'Changes') and (row.story not in addedStories):
-            #         changeTable = child
-            #         ids = client.search_pages_with_parent(changeTable.collection.id)
+            #Run through the changes table to look for changes with the same story as the current story
             for change_row in changeView.collection.get_rows():
                 block = client.get_block(change_row.id)
                 for item in block.story:
@@ -107,7 +104,7 @@ statuses = ['0. On deck for Brendan',
         ]
 
 
-#Takes data pulled from Changes tables and calculates times spent in each status for each story
+#Takes data pulled from Changes table and calculates times spent in each status for each story
 #Writes to new csv file called status_times.csv
 def get_status_times(new_df):
     
@@ -130,13 +127,19 @@ def get_status_times(new_df):
 
     for _index, change in new_df.iterrows():
         
+        #Inserts each change into an array in reverse order because it makes calculating
+        #status times using furthest points easier -> this array is used in the get_status_times_furthest
+        #method
         reverse_array.insert(0, change)
-
+    
         if firstRow:
             currentStory = change['Story']
             currentShipDate = change['Ship Date']
             firstRow = False
 
+        #Onto a new story, so take all the status times calculated from the previous story
+        #(stored in the times array), and add rows to the status times csv file 
+        #(1 row for each status, 14 in total)
         if change['Story']!=currentStory and change['Story']:
             indexCount = 0
             for time in times:
@@ -153,6 +156,9 @@ def get_status_times(new_df):
         currentDate = datetime.datetime.strptime(change_date, '%Y-%m-%d %H:%M:%S')
         currentStatusNum = int(change['Status'].split(".")[0])
         
+        #If it's not the first change of a story, calculate the status time by subtracting 
+        #The date of the previous change by the date of the current change
+        #Add the time in hours to the times array in the correct index (IE: index 11 is QA)
         if rowNum!=0:
             timeElapsed = (previousDate - currentDate).total_seconds()/3600
             times[currentStatusNum]+=timeElapsed
@@ -160,6 +166,7 @@ def get_status_times(new_df):
         previousDate = currentDate
         rowNum = rowNum+1
 
+    #Last story 
     indexCount = 0
     for time in times:
         csv_writer.writerow([change['Story'],statuses[indexCount],time,change['Ship Date']])
@@ -262,7 +269,7 @@ def get_status_totals():
 
     statusTotal_file.close()
 
-
+#CHECK WARNING ABOUT GOOGLE SHEETS API IN COMMENTS LOWER DOWN#
 #Adds all data from status_times to HA Google Spreadsheets - Notion_Changes_Data worksheet
 def update_spreadsheet():
     print("Adding all data to Google Sheets")
@@ -287,11 +294,16 @@ def update_spreadsheet():
     
     update_spreadsheet_helper(sheet, 'status_times.csv')
     
+    #Google Sheets API has 100 request limit per 100 seconds, so have to avoid that by sleeping
+    #!! MAY NEED TO EDIT THIS TO KEEP TRACK OF REQUESTS DYNAMICALLY AND THEN SLEEP AFTER EACH 
+    #100 WHEN STORY NUMBERS GET LARGE!!#
     print("Waiting for Google Sheets API's limit on requests per 100 seconds :(")
     time.sleep(100)
     print("Done sleeping")
     update_spreadsheet_helper(sheet_furthest, 'status_times_furthest.csv')
 
+#Takes in the specific spreadsheet (either notion changes data or notion changes data furthest)
+#and the csv file, updates the spreadsheet with the info from the csv file
 def update_spreadsheet_helper(sheet, csv_file):
 
     max_rows = len(sheet.get_all_values())
@@ -315,6 +327,7 @@ def update_spreadsheet_helper(sheet, csv_file):
                 firstRow = False
 
             if(row[0]!=currentStory):
+                #Writes to spreadsheet
                 sheet.append_row(newSheetRow)
 
                 currentStory = row[0]
@@ -324,7 +337,7 @@ def update_spreadsheet_helper(sheet, csv_file):
                 newSheetRow.append(currentShipDate)
             
             newSheetRow.append(float(row[2]))
-
+        #Writes to spreadsheet
         sheet.append_row(newSheetRow)
 
     #Calculating/Adding totals and averages to spreadsheet
@@ -345,8 +358,10 @@ def update_spreadsheet_helper(sheet, csv_file):
     csv_writer.writerows(sheet.get(f"A5:P{last_row}"))
     status_condensed.close()
 
+    #Sort stories by ship date
     sheet.sort((2, 'des'), range=f"A6:P{last_row}")
 
+    #Formatting
     sheet.format(f'A6:P{last_row}', {
             "textFormat": {
                 "fontSize": 10,
@@ -360,6 +375,7 @@ def update_spreadsheet_helper(sheet, csv_file):
         }
     )
 
+#Update the date/time this script was run in the last status calc file to be displayed on the website
 def update_last_run():
     currentDate = datetime.datetime.now().strftime("%m/%d/%Y %H:%M")
     with open('last_status_calc.csv', 'w') as f:
@@ -367,6 +383,7 @@ def update_last_run():
         file_writer = csv.writer(f)
         file_writer.writerow([currentDate])
 
+#Files to upload to s3
 file_names = [
     "changes_metrics.csv", 
     "status_times_condensed.csv",
@@ -377,6 +394,7 @@ file_names = [
     "last_status_calc.csv"
 ]
 
+#Upload all files to s3 (replacing the old ones with the new ones)
 def upload_files_to_s3():
     print()
     print("Uploading files to s3")

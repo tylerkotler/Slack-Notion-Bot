@@ -16,15 +16,19 @@ import csv
 slack_client = WebClient(slack_token)
 notion_client = NotionClient(token_v2=notion_token_v2)
 
+#Receives command and subcommand info
 def main(command_info, subcommand_info):
     story = command_info.get('story')
     status = command_info.get('status')
     user = command_info.get('user')
 
+    #Gets the Notion API row structure of the story
     row = find_story(story)
+    #Changes the status -> moves the story
     row.set_property('status', status)
     url = notion_client.get_block(row.id).get_browseable_url()
 
+    #If quiet is not in subcommand info, automatic message will be sent
     if 'quiet' not in subcommand_info:
         #Moved card to status 6-13 -> send message to dev-experience
         if int(status.split(".")[0])>=6:
@@ -41,7 +45,9 @@ def main(command_info, subcommand_info):
     else:
         print("Message in slack turned off")
     
+    #Add the changes data in the Changes Table
     add_changes_data(story, status, user, row)
+
     #If the story is completed, trigger the notion_data script to calculate all the
     #status times and update the spreadsheet
     #Also update the ship date to today
@@ -73,7 +79,7 @@ def remove_chars(story):
     story = pattern.sub('', story)
     return story
 
-
+#Add the changes data -> creates new row in the table
 def add_changes_data(story, status, user, row):
     change_made_by = slack_client.users_info(user=user)["user"]["real_name"]
     changeView = notion_client.get_collection_view("https://www.notion.so/humanagency/a11ad18166f445e694c64037fbfd7d5b?v=67d6efa07c224fdc89603e1d9eb6ad5d")
@@ -82,39 +88,50 @@ def add_changes_data(story, status, user, row):
     change_row.status = status
     change_row.change_made_by = change_made_by
     story_block = notion_client.get_block(row.id)
+    #Notion API Collection Row Block is created in order to get the linked story in the Story column
     new_CR_block = CollectionRowBlock(notion_client, story_block.id)
     change_row.story = new_CR_block
 
-
+#Sends the automatic message in Slack
 def send_move_message(row, story, status, user, url, subcommand_info, channel):
     user_id = slack_client.users_info(user=user)["user"]["id"]
+    #Gets the automatically tagged people
     status_names = slack_bot.statuses.get(status)
-    tag_string = ''
-    if status.startswith("9"): #get assigned developers if story moves to 9
+    
+    #get assigned developers on Notion card if story moves to 9
+    if status.startswith("9"): 
         assigned = row.get_property("assign")
         users_cv = notion_client.get_collection_view("https://www.notion.so/humanagency/8daf88aa8e384105b1a8cab2c100b731?v=97fca2b55bea4173a8ec8bbba8c8ba49")
         for user in assigned:
             for row in users_cv.collection.get_rows():
                 if row.title == user.full_name:
                     status_names.append(row.slack_real_name)
+    
+    tag_string = ''
     if status_names:
+        #Get the string of users who should be tagged -> uses their ID's instead of Slack real name
         tag_string = get_tag_string(status_names)
+    
     message_back = f"<@{user_id}> moved:\n*{story}*\nto _*{status}*_" + tag_string 
 
+    #Add to message sent in Slack
     if 'message' in subcommand_info:
         message_back = message_back + "\n" + subcommand_info.get('message')
 
     message_back = message_back + "\n" + url
 
+    #Get additional info sent in message, such as github pr or review app
     additional_string = add_to_message(row, story, status)
     if additional_string!="":
         message_back = message_back + "\n" + additional_string
 
+    #Send back message
     slack_client.chat_postMessage(
           channel=channel,
           text=message_back
     )
 
+#Takes in slack real names and formats string with their IDs to tag them in Slack message
 def get_tag_string(status_names):
     firstTag = True
     slack_users = slack_client.users_list()
