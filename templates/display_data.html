@@ -26,7 +26,11 @@
             <label for="statuses">Change Status: </label>
             <select id="statuses" name="statuses">
                 {% for status in statuses %}
+                    {% if status==selected_status %}
+                    <option value="{{ status }}" selected>{{ status }}</option>
+                    {% else %}
                     <option value="{{ status }}">{{ status }}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
             <input type="hidden" id="hidden_furthest" name="hidden_furthest" value="{{ furthest }}"> 

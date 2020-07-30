@@ -81,7 +81,7 @@ def display():
     status = request.form['statuses']
     script, div = display_data.scatter(status, furthest)
     
-    return render_template("display_data.html", script=script, div=div, statuses=statuses, furthest=furthest)
+    return render_template("display_data.html", script=script, div=div, statuses=statuses, furthest=furthest, selected_status=status)
 
 @app.route("/sheets_data", methods=['POST', 'GET'])
 def sheets():
