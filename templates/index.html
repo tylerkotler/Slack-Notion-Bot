@@ -3,13 +3,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <!-- <link rel="stylesheet" type="text/css" href="static/style.css" /> -->
+  <link rel="stylesheet" href="static/style.css">
   <title>Index Page</title>
 </head>
 <body>
     <h1>Notion Slack Bot Homepage</h1>
     <h2>(Dwayne's Brains)</h2>
-    <br>
+    <img class="dwayne" src="{{url_for('static', filename='dwayne_bot.png')}}" width="100" height="100"/>
+    <br><br><br>
     <form method="post" action="/files">
         <input type="submit" value="S3 Files" name="S3 Files"/>
     </form> 

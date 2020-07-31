@@ -8,6 +8,9 @@ body{
 h1{
     text-align: center;
 }
+h2{
+    text-align: center;
+}
 table{
     border: 1px solid gray;
     margin-left: auto;
@@ -33,6 +36,11 @@ th{
 .subtitle{
     font-size: 10px;
 }
+.dwayne{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 /* .sheets_div{
     text-align: center;
@@ -55,5 +63,5 @@ th{
 
 iframe{
     height: 800px;
-    width: 600px;
+    width: 95%;
 }
