@@ -8,6 +8,8 @@ Created by Tyler Kotler (tylerk1004@gmail.com), Summer 2020
 
 **3. commands and subcommands folders** -> Each command and subcommand has it's own python file, which allows it to be dynamically located and called by the command hub. They handle receiving, executing, and sending back the information needed to complete the commands.
 
+**4. data folder** -> It has the notion_data script, which is run every time a story moves to column 13. This script pulls the changes data off Notion, calculates status times, and uploads it to csvs in AWS s3 and Google Sheets. It also has the display data script, which has a scatter function to build the bokeh plots of hours over time in each status that are on the webpage.
+
 ## Documentation:
 All documentation for the bot is on Notion in Tech -> Documentation -> Slack Bot
 
@@ -26,6 +28,6 @@ All credentials are stored as config variables in the notion-slackbot app on Her
  - These come from the Slack API through Tech and Marketing for Good's slack apps
  
  **4. AWS S3**
-  - There is a S3 Key and Secret thaat are found in the human-agency-slackbot bucket.
+  - There is a S3 Key and Secret that are found in the human-agency-slackbot bucket.
  
  
