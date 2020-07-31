@@ -39,7 +39,7 @@ def scatter(status, furthest):
 
     p = figure(
         x_axis_type='datetime',
-        plot_width = 1000,
+        plot_width = 1200,
         plot_height = 400,
         title=f'{status}',
         y_axis_label='Hours',
