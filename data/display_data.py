@@ -45,7 +45,7 @@ def scatter(status, furthest):
         y_axis_label='Hours',
         tools="pan,box_select,zoom_in,zoom_out,save,reset"
     )
-
+ 
     p.scatter(
         y=status, 
         x='Ship Date',
