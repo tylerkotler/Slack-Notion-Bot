@@ -51,7 +51,7 @@ statuses = {'0. On deck for Brendan': ['Brendan Lind'],
             '8. Start This Week (Next up)': [],
             '9. Finish This Week (In Progress)': [],
             '10. Code Review': ['Mike Menne'],
-            '11. QA Review': ['Tyler Kotler', 'Slavik'],
+            '11. QA Review': ['Volodymyr Solin', 'Slavik'],
             '12. PO Verify (Test UX & Push)': ['Ben', 'Volodymyr Solin'], 
             '13. Complete! (On Live)': []
 }
